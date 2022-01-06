@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://h-pl.github.io</id>
-    <title>Web Note</title>
-    <updated>2022-01-06T08:03:23.196Z</updated>
+    <title>知知</title>
+    <updated>2022-01-06T08:09:44.482Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://h-pl.github.io"/>
     <link rel="self" href="https://h-pl.github.io/atom.xml"/>
-    <subtitle>不知为不知</subtitle>
     <logo>https://h-pl.github.io/images/avatar.png</logo>
     <icon>https://h-pl.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2022, Web Note</rights>
+    <rights>All rights reserved 2022, 知知</rights>
     <entry>
         <title type="html"><![CDATA[评估 HVAC 系统在碳中和的优化方向]]></title>
         <id>https://h-pl.github.io/post/hvac-xi-tong-dui-huan-jing-de-ying-xiang/</id>
@@ -30,18 +29,5 @@
         <link href="https://h-pl.github.io/post/ban-lu-chu-jia-xue-qian-duan/">
         </link>
         <updated>2021-11-23T06:56:47.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hello Gridea]]></title>
-        <id>https://h-pl.github.io/post/hello-gridea/</id>
-        <link href="https://h-pl.github.io/post/hello-gridea/">
-        </link>
-        <updated>2018-12-11T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-]]></content>
     </entry>
 </feed>
