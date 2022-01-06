@@ -1,0 +1,344 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>评估 HVAC 系统在碳中和的优化方向 | Web Note</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1641455723266">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            Web Note
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1641455723266" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    评估 HVAC 系统在碳中和的优化方向
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2022-01-04 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p>关于这一议题，大多数已发表的研究都是基于假设和经验法。首次评估和制定了基于BIM的HVAC系统详细的**全生命周期评估（LCA）**的要求和方法。以瑞士大楼及现有的能效路径作为基础，LCA结果表明，暖通空调系统的影响是原来的三倍😲，且占总影响的15-36%。</p>
+<h2 id="研究目标">研究目标</h2>
+<p><strong>本文目标</strong>是：优化现有工作流程，因大量参数化工作，借助了可视化编程（VPL）将外部产品数据信息连接到BIM构件的方法。</p>
+<ul>
+<li>
+<p>建筑行业占全球碳排放的40%</p>
+<ul>
+<li>高效的建筑技术和可再生能源代替传统能源</li>
+<li>隐含碳是指建筑材料在制造、运输、施工和生命周期结束阶段释放的温室气体，占建筑行业的11%</li>
+<li>在瑞士，暖通空调系统（供暖、通风、热分配）的制造和维护过程中的温室气体排放约占新办公建筑总排放量的13%😕</li>
+</ul>
+</li>
+<li>
+<p>到目前为止，只有少数研究测量了HVAC系统的内在影响[17]</p>
+<ul>
+<li>其中，只有一个[31]使用了一个建成的或几乎建成的BIM HVAC模型</li>
+<li>一般来说，这类研究可大致分为两种类型的<strong>HVAC系统的LCA研究</strong>。
+<ul>
+<li>第一种类型的研究在两个或更多的HVAC系统之间进行比较，以确定哪个系统对环境的影响更小，这些研究对详细的评估不感兴趣</li>
+<li>第二类HVAC的LCA是指对HVAC系统的<strong>详细评估</strong>📃，类似的研究有四项
+<ul>
+<li>其中，最具代表的一项研究发现</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>影响因素</th>
+<th>影响占比</th>
+<th>重要性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>室内（天花板、门、家具、栏杆）</td>
+<td>43%</td>
+<td>最大</td>
+</tr>
+<tr>
+<td>技术设备🔌</td>
+<td>24%</td>
+<td></td>
+</tr>
+<tr>
+<td>结构框架</td>
+<td>21%</td>
+<td></td>
+</tr>
+<tr>
+<td>围护结构</td>
+<td>12%</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 id="研究方法">研究方法</h2>
+<p><strong>基于BIM的LCA</strong>被用于许多研究中，试图摆脱传统的LCA（基于手工的计算），并为设计者提供一个工具，以方便在设计阶段对建筑进行环境影响评估，以及在施工后进行评估（即符合标准或用于知识生成）。也有两种方法被大量使用，但它们🔨<strong>忽略了或过度简化</strong>了HVAC系统。在体现环境影响方面，以及在如何使用BIM模型和现有工具或方法评估暖通空调系统方面，存在着<strong>研究空白</strong>👀。</p>
+<ul>
+<li>第一种，目前主要借助于商业工具是LCA 与 BIM 相结合（如 Tally 或 OneClickLCA），主要原理是从BIM模型中提取信息（IFC或gbXML格式），然后导入LCA软件中</li>
+<li>第二种，使用BIM与可视化编程语言（VPL）。这种方法能够从BIM模型中自动提取信息，并创建可更新的链接到LCA数据库。
+<ul>
+<li>BIM模型提取的数据主要有几何数据、材料数据（数量和名称）和LCA数据。
+<ul>
+<li>几何信息是直接从BIM模型中提取的。</li>
+<li>材料信息可以直接从BIM模型中提取。
+<ul>
+<li>在某些情况下，材料数量信息可以直接从BIM模型或产品数据表中获取。</li>
+<li>在其他情况下，数量需要通过结合数学公式和来自BIM模型的几何信息来计算。</li>
+</ul>
+</li>
+<li>如果模型中<strong>没有</strong>这些信息，那么就用产品数据表来代替。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://h-pl.github.io/post-images/1641361724264.png" alt="" loading="lazy"></figure>
+<h6 id="图1描述了hvac系统的综合bim和lca工作流程-该示意图显示了与vpl相连的不同数据源-具体来说来自bim模型1-产品数据表2和lca数据库3的信息在vpl环境中被结合起来计算影响并将结果以所需格式导出-本研究中使用的bim软件是revit-2019而vpl是dynamo-20">图1描述了HVAC系统的综合BIM和LCA工作流程。该示意图显示了与VPL相连的不同数据源。具体来说，来自BIM模型（1）、产品数据表（2）和LCA数据库（3）的信息在VPL环境中被结合起来，计算影响，并将结果以所需格式导出。本研究中使用的BIM软件是Revit 2019，而VPL是Dynamo 2.0。</h6>
+<p>从而实现以下功能🌈：</p>
+<ul>
+<li>直接从BIM模型中提取物体和材料数据。</li>
+<li>在BIM对象和产品数据表/目录之间以及材料和LCA数据库之间建立双向链接。</li>
+<li>进行LCA计算并将结果导出到Excel文件中。<br>
+该工具的灵活性使其有可能根据所需的（LCA）边界条件、可用的数据以及数据格式和其结构来定制拟议的工作流程。</li>
+</ul>
+<h3 id="直接从bim模型中提取物体和材料数据">直接从BIM模型中提取物体和材料数据。</h3>
+<p>分析从对象层面开始，通过三个步骤将计算细化到材料层面。</p>
+<ul>
+<li>根据元素的复杂程度和性质，对元素进行高级分组和排序。管道与管道被归类在一起，因为它们都是线性元素，具有类似的细节（复杂性）。</li>
+<li>第二个层次，元素被进一步细分。例如，风管被细分为矩形风管和圆形风管。</li>
+<li>第三层也是最底层的分组/排序是根据材料类型进行的，例如，圆钢风管和圆铜风管。</li>
+</ul>
+<p>根据共同特征，即几何形状和复杂程度，创建了四个不同的组。这四组是风管和管道，配件，机械设备和空气终端，以及管道和风管配件。总的来说，评估组的材料数量计算采用了三种方法。</p>
+<ul>
+<li>第一种方法中，从BIM模型中提取材料和几何信息，并利用科学公式（BIM数据与科学公式相结合）在Dynamo中计算材料的重量。</li>
+<li>在第二种方法中，材料和几何信息从BIM模型中提取，在Dynamo中与产品数据表信息相结合（BIM数据与产品数据表数据相结合）。在大多数情况下，**来自产品数据表的重量信息是按物体而不是按材料提供的。**因此，必须假定👓各种物体材料在总重量中所占的百分比。</li>
+<li>第三种方法包括将物体与来自产品数据表的重量信息直接映射（BIM物体链接到产品数据表），也必须假设产品材料占总重量的百分比。</li>
+</ul>
+<p>⚠️如果上述的方法都不适用，比如配件的情况，那么就采用<strong>经验法则</strong>的估计方法</p>
+<h3 id="各类构件的计算方法">各类构件的计算方法</h3>
+<ol>
+<li>风管和管道的质量</li>
+</ol>
+<ul>
+<li>两者统称为线性图元。可采用<br>
+<img src="https://h-pl.github.io/post-images/1641361658984.png" alt="" loading="lazy"><br>
+其中，M是单位长度质量 kg/m，D是外径 mm，T是壁厚 mm</li>
+<li>异形构件<br>
+实体对象，即无参数对象。计算直径与总面积的比值。根据面积比通过<strong>经验公式</strong>推导异形构件与总管道及风管的质量比。</li>
+</ul>
+<ol start="2">
+<li>机械设备与终端</li>
+</ol>
+<ul>
+<li>来源于制造商</li>
+</ul>
+<ol start="3">
+<li>管道附件及新材料（组合材料）</li>
+</ol>
+<ul>
+<li>来源于制造商</li>
+<li>新材料（组合材料）来源于类似材料</li>
+</ul>
+<h3 id="lca-数据来源">LCA 数据来源</h3>
+<p>主要是由KBOB和Ecoinvent数据库检索而得。其中，LCA值主要基于材料映射。</p>
+<h3 id="案例分析">案例分析</h3>
+<p>案例研究是位于瑞士的西门子国际总部办公大楼。该办公楼于 2018 年竣工，是位于楚格的西门子新园区的一部分。它拥有 LEED 白金认证和瑞士 Minergie 标签，重点关注建筑外壳和能源消耗。该建筑共有七层，总建筑面积（​​GFA）为 32,000 平方米，包括地下两层，主要用作车库。在暖通空调系统方面，该建筑以水为热泵运行，并使用楚格湖的水进行加热和自然冷却。这是首批使用 BIM 的西门子建筑项目之一。 HVAC 系统的 BIM 模型（图 2）在施工完成后经历了广泛的修订。它的开发水平 (LOD) 高于 300，尽管观察到某些元素比其他元素更详细。此外，该项目得到了很好的参数记录，包括大多数 HVAC 设备的产品数据表和详细信息。可以说，结合制造商信息的施工后BIM模型满足了竣工要求。</p>
+<h3 id="结论">结论</h3>
+<p>材料数量提取结果表明，镀锌钢（66%）、铝（13%）和矿棉（10%）是主要材料。该案例钢材总量，包括镀锌钢、不锈钢、钢材，共计356吨，约占总材料量的80%（图3）。<br>
+<img src="https://h-pl.github.io/post-images/1641366062708.png" alt="" loading="lazy"></p>
+<p>当考虑到建筑的整个生命周期时，每个部件的LCA变得更加耐人寻味。与制造阶段相比，管道系统和机械设备的更换阶段产生的温室气体排放表明，与制造阶段的影响（15.3 kgCO2eq/m2）相比，机械设备在<strong>使用阶段</strong>的影响几乎翻倍（35 kgCO2eq/m2）。这种增加与建筑使用阶段的设备🌵<strong>更换频率</strong>有关。<br>
+例如，热泵是每20年更换一次。因此，在60年的建筑寿命中，它们被更换两次。材料数量的增加所产生的环境影响十分明显，两倍。总的来说，<strong>机械设备与风管和管道</strong>一起，是暖通空调系统生命周期内温室气体排放总量的主要贡献者。在更高的层面上，关于调查模块的结果显示，更换（B4）的年化排放量为1.70千克二氧化碳当量/平方米，是建筑生命周期阶段中<strong>碳密集度最高</strong>的；而制造（A1-A3）的年化排放量为1.32千克二氧化碳当量/平方米，以及运行（B6）的年化排放量为1.25千克二氧化碳当量/平方米，其重要性相近。运行影响的计算是基于公用事业公司提供的能源消耗数据，结合能源工程师提供的按计划的能源分配图。暖通空调系统的能源消耗占总能源消耗的57%。最后，弃置影响非常小（0.4 kgCO2eq/m2），主要来自于绝缘和辅助材料。</p>
+<p>值得注意的是，大型空气处理机组AHU内的过滤器更换数量是😱<strong>相当可观</strong>的，占AHU更换总影响数的65%。而整个HVAC系统中，过滤器的更换占整个系统总更换影响的😱11%。其中，管道附件中，蝶阀，多叶风阀，流量控制器是碳排放量最大的。</p>
+<h3 id="参考文献">参考文献</h3>
+<ul>
+<li><a href="/pdf/HVACandBIM.pdf">HVAC and BIM</a></li>
+</ul>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/ban-lu-chu-jia-xue-js/" class="post-title gt-a-link">
+                    再续Js前缘
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">不知为不知</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
