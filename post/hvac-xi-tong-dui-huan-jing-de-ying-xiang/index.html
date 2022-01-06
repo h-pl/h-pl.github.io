@@ -6,7 +6,7 @@
 
 <title>评估 HVAC 系统在碳中和的优化方向 | 知知</title>
 
-<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1641456795929">
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1641457015836">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
@@ -77,7 +77,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1641456795929" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1641457015836" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -102,7 +102,7 @@
                     
                 </div>
                 <div class="post-content">
-                    <p>关于这一议题，大多数已发表的研究都是基于假设和经验法。首次评估和制定了基于BIM的HVAC系统详细的**全生命周期评估（LCA）**的要求和方法。以瑞士大楼及现有的能效路径作为基础，LCA结果表明，暖通空调系统的影响是原来的三倍😲，且占总影响的15-36%。</p>
+                    <p>关于这一议题，大多数已发表的研究都是基于假设和经验法。首次评估和制定了基于BIM的HVAC系统详细的<strong>全生命周期评估</strong>（LCA）的要求和方法。以瑞士大楼及现有的能效路径作为基础，LCA结果表明，暖通空调系统的影响是原来的三倍😲，且占总影响的15-36%。</p>
 <h2 id="研究目标">研究目标</h2>
 <p><strong>本文目标</strong>是：优化现有工作流程，因大量参数化工作，借助了可视化编程（VPL）将外部产品数据信息连接到BIM构件的方法。</p>
 <ul>
@@ -120,8 +120,8 @@
 <li>其中，只有一个[31]使用了一个建成的或几乎建成的BIM HVAC模型</li>
 <li>一般来说，这类研究可大致分为两种类型的<strong>HVAC系统的LCA研究</strong>。
 <ul>
-<li>第一种类型的研究在两个或更多的HVAC系统之间进行比较，以确定哪个系统对环境的影响更小，这些研究对详细的评估不感兴趣</li>
-<li>第二类HVAC的LCA是指对HVAC系统的<strong>详细评估</strong>📃，类似的研究有四项
+<li>1️⃣第一种类型的研究在两个或更多的HVAC系统之间进行比较，以确定哪个系统对环境的影响更小，这些研究对详细的评估不感兴趣</li>
+<li>2️⃣第二类HVAC的LCA是指对HVAC系统的<strong>详细评估</strong>📃，类似的研究有四项
 <ul>
 <li>其中，最具代表的一项研究发现</li>
 </ul>
@@ -165,8 +165,8 @@
 <h2 id="研究方法">研究方法</h2>
 <p><strong>基于BIM的LCA</strong>被用于许多研究中，试图摆脱传统的LCA（基于手工的计算），并为设计者提供一个工具，以方便在设计阶段对建筑进行环境影响评估，以及在施工后进行评估（即符合标准或用于知识生成）。也有两种方法被大量使用，但它们🔨<strong>忽略了或过度简化</strong>了HVAC系统。在体现环境影响方面，以及在如何使用BIM模型和现有工具或方法评估暖通空调系统方面，存在着<strong>研究空白</strong>👀。</p>
 <ul>
-<li>第一种，目前主要借助于商业工具是LCA 与 BIM 相结合（如 Tally 或 OneClickLCA），主要原理是从BIM模型中提取信息（IFC或gbXML格式），然后导入LCA软件中</li>
-<li>第二种，使用BIM与可视化编程语言（VPL）。这种方法能够从BIM模型中自动提取信息，并创建可更新的链接到LCA数据库。
+<li>1️⃣第一种，目前主要借助于商业工具是LCA 与 BIM 相结合（如 Tally 或 OneClickLCA），主要原理是从BIM模型中提取信息（IFC或gbXML格式），然后导入LCA软件中</li>
+<li>2️⃣第二种，使用BIM与可视化编程语言（VPL）。这种方法能够从BIM模型中自动提取信息，并创建可更新的链接到LCA数据库。
 <ul>
 <li>BIM模型提取的数据主要有几何数据、材料数据（数量和名称）和LCA数据。
 <ul>
@@ -175,17 +175,17 @@
 <ul>
 <li>在某些情况下，材料数量信息可以直接从BIM模型或产品数据表中获取。</li>
 <li>在其他情况下，数量需要通过结合数学公式和来自BIM模型的几何信息来计算。</li>
-</ul>
-</li>
 <li>如果模型中<strong>没有</strong>这些信息，那么就用产品数据表来代替。</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<figure data-type="image" tabindex="1"><img src="https://h-pl.github.io/post-images/1641361724264.png" alt="" loading="lazy"></figure>
-<h6 id="图1描述了hvac系统的综合bim和lca工作流程-该示意图显示了与vpl相连的不同数据源-具体来说来自bim模型1-产品数据表2和lca数据库3的信息在vpl环境中被结合起来计算影响并将结果以所需格式导出-本研究中使用的bim软件是revit-2019而vpl是dynamo-20">图1描述了HVAC系统的综合BIM和LCA工作流程。该示意图显示了与VPL相连的不同数据源。具体来说，来自BIM模型（1）、产品数据表（2）和LCA数据库（3）的信息在VPL环境中被结合起来，计算影响，并将结果以所需格式导出。本研究中使用的BIM软件是Revit 2019，而VPL是Dynamo 2.0。</h6>
-<p>从而实现以下功能🌈：</p>
+</li>
+</ul>
+<p><img src="https://h-pl.github.io/post-images/1641361724264.png" alt="" loading="lazy"><br>
+####### 图1描述了HVAC系统的综合BIM和LCA工作流程。该示意图显示了与VPL相连的不同数据源。具体来说，来自BIM模型（1）、产品数据表（2）和LCA数据库（3）的信息在VPL环境中被结合起来，计算影响，并将结果以所需格式导出。本研究中使用的BIM软件是Revit 2019，而VPL是Dynamo 2.0。<br>
+从而实现以下功能🌈：</p>
 <ul>
 <li>直接从BIM模型中提取物体和材料数据。</li>
 <li>在BIM对象和产品数据表/目录之间以及材料和LCA数据库之间建立双向链接。</li>
@@ -195,15 +195,15 @@
 <h3 id="直接从bim模型中提取物体和材料数据">直接从BIM模型中提取物体和材料数据。</h3>
 <p>分析从对象层面开始，通过三个步骤将计算细化到材料层面。</p>
 <ul>
-<li>根据元素的复杂程度和性质，对元素进行高级分组和排序。管道与管道被归类在一起，因为它们都是线性元素，具有类似的细节（复杂性）。</li>
-<li>第二个层次，元素被进一步细分。例如，风管被细分为矩形风管和圆形风管。</li>
-<li>第三层也是最底层的分组/排序是根据材料类型进行的，例如，圆钢风管和圆铜风管。</li>
+<li>1️⃣根据元素的复杂程度和性质，对元素进行高级分组和排序。管道与管道被归类在一起，因为它们都是线性元素，具有类似的细节（复杂性）。</li>
+<li>2️⃣第二个层次，元素被进一步细分。例如，风管被细分为矩形风管和圆形风管。</li>
+<li>3️⃣第三层也是最底层的分组/排序是根据材料类型进行的，例如，圆钢风管和圆铜风管。</li>
 </ul>
 <p>根据共同特征，即几何形状和复杂程度，创建了四个不同的组。这四组是风管和管道，配件，机械设备和空气终端，以及管道和风管配件。总的来说，评估组的材料数量计算采用了三种方法。</p>
 <ul>
-<li>第一种方法中，从BIM模型中提取材料和几何信息，并利用科学公式（BIM数据与科学公式相结合）在Dynamo中计算材料的重量。</li>
-<li>在第二种方法中，材料和几何信息从BIM模型中提取，在Dynamo中与产品数据表信息相结合（BIM数据与产品数据表数据相结合）。在大多数情况下，**来自产品数据表的重量信息是按物体而不是按材料提供的。**因此，必须假定👓各种物体材料在总重量中所占的百分比。</li>
-<li>第三种方法包括将物体与来自产品数据表的重量信息直接映射（BIM物体链接到产品数据表），也必须假设产品材料占总重量的百分比。</li>
+<li>1️⃣第一种方法中，从BIM模型中提取材料和几何信息，并利用科学公式（BIM数据与科学公式相结合）在Dynamo中计算材料的重量。</li>
+<li>2️⃣第二种方法中，材料和几何信息从BIM模型中提取，在Dynamo中与产品数据表信息相结合（BIM数据与产品数据表数据相结合）。在大多数情况下，**来自产品数据表的重量信息是按物体而不是按材料提供的。**因此，必须假定👓各种物体材料在总重量中所占的百分比。</li>
+<li>3️⃣第三种方法包括将物体与来自产品数据表的重量信息直接映射（BIM物体链接到产品数据表），也必须假设产品材料占总重量的百分比。</li>
 </ul>
 <p>⚠️如果上述的方法都不适用，比如配件的情况，那么就采用<strong>经验法则</strong>的估计方法</p>
 <h3 id="各类构件的计算方法">各类构件的计算方法</h3>
