@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>半路出家学前端 | 知知</title>
+<title>Three.js 基础 | 知知</title>
 
 <link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1641903730214">
 
@@ -89,27 +89,100 @@
         <div class="post-detail gt-bg-theme-color-second">
             <article class="gt-post-content">
                 <h2 class="post-title">
-                    半路出家学前端
+                    Three.js 基础
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2021-11-23 ·
+                        · 2022-01-11 ·
                     </time>
                     
-                        <a href="https://h-pl.github.io/tag/WEnfwKp-Ja/" class="post-tags">
-                            # 索引
+                        <a href="https://h-pl.github.io/tag/ogd3zfv-5/" class="post-tags">
+                            # Threejs
+                        </a>
+                    
+                        <a href="https://h-pl.github.io/tag/Hi9vqMknw/" class="post-tags">
+                            # jsNote
                         </a>
                     
                 </div>
                 <div class="post-content">
                     <ol>
-<li>原因。 我也不知道为什么是前端，这就叫执拗了。成功了一半，不是吗? <a href="/WebPath.html">前端路线</a></li>
-<li>大致的列表
+<li>
+<p>基础知识</p>
 <ul>
-<li>HTML 基础 √</li>
-<li>CSS 基础 √ ~~ 也可能忘记一半 ~~</li>
-<li><a href="/post/ban-lu-chu-jia-xue-js/">Js</a></li>
+<li>对Webgl<strong>封装</strong>，实现 诸如场景、灯光、阴影、材质、贴图、空间运算等功能<br>
+<img src="https://h-pl.github.io/post-images/1641899560701.png" alt="" loading="lazy"></li>
+<li>这些对象通过一个层级关系明确的树状结构来展示出各自的位置和方向。子对象的位置和方向总是相对于父对象而言的。</li>
+<li><strong>网格不是最小单位</strong>，网格包含几何体和材质。</li>
+<li>相同几何体A、B、C为一个几何体A，其他网格内的相同几何体B、C以<strong>引用</strong>的方式访问A。 例如，在不同的位置画两个蓝色立方体，我们会需要两个网格(Mesh)对象来代表每一个立方体的位置和方向。但只需一个几何体(Geometry)来存放立方体的顶点数据，和一种材质(Material)来定义立方体的颜色为蓝色就可以了。两个网格(Mesh)对象都引用了相同的几何体(Geometry)和材质(Material)。
+<ul>
+<li>几何体并不是一般意义的<strong>几何体</strong>，更多的是<strong>顶点信息</strong>。Three.js内置了许多<a href="https://threejs.org/manual/#zh/primitives">基本几何体</a> 。你也可以创建自定义几何体或从文件中加载几何体。</li>
+<li>材质(Material)对象代表绘制几何体的表面属性，包括使用的颜色，和光亮程度。一个材质(Material)可以引用一个或多个纹理(Texture)，</li>
 </ul>
+</li>
+<li>光源(Light)对象代表不同种类的光。</li>
+</ul>
+</li>
+<li>
+<p>从 hello word 开始</p>
+<p>2.1 在html内<code>&lt;script&gt;</code>中引入<strong>three.js</strong></p>
+<pre><code class="language-js">&lt;script type=&quot;module&quot;&gt;
+import * as THREE from '../../build/three.module.js';
+&lt;/script&gt;
+</code></pre>
+<p>2.2 html内创建<code>&lt;canvas&gt;</code>标签，并注明id</p>
+<pre><code class="language-html">&lt;body&gt;
+&lt;canvas id=&quot;c&quot;&gt;&lt;/canvas&gt;
+&lt;/body&gt;
+</code></pre>
+<p>2.3 链接画布并挂载渲染器</p>
+<pre><code class="language-js">&lt;script type=&quot;module&quot;&gt;
+import * as THREE from '../../build/three.module.js';
+
+function main() {
+const canvas = document.querySelector('#c'); //获取画布
+const renderer = new THREE.WebGLRenderer({canvas});//挂载渲染器
+...
+&lt;/script&gt;
+</code></pre>
+<p>2.4 创建<strong>透视视图</strong>(近大远小)摄像机，只有视锥内的物体才能被看到</p>
+<pre><code class="language-js">const fov = 75;
+const aspect = 2;  // 相机默认值
+const near = 0.1;
+const far = 5;
+const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+//这四个参数定义了一个 &quot;视椎(frustum)&quot;。
+</code></pre>
+<ul>
+<li>视野范围(field of view)的缩写。上述代码中是指垂直方向为75度。 注意three.js中大多数的角用弧度表示，但是因为某些原因透视摄像机使用角度表示。</li>
+<li>aspect指画布的宽高比。我们将在别的文章详细讨论，在默认情况下 画布是300x150像素，所以宽高比为300/150或者说2。</li>
+<li>near和far代表近平面和远平面，它们限制了摄像机面朝方向的可绘区域。 任何距离小于或超过这个范围的物体都将被裁剪掉(不绘制)。<br>
+<img src="https://h-pl.github.io/post-images/1641902032047.png" alt="视椎" loading="lazy"></li>
+<li>近平面和远平面的高度由视野范围决定，宽度由视野范围和宽高比决定。</li>
+</ul>
+<p>2.5 创建一个场景(Scene)</p>
+<pre><code class="language-js">const scene = new THREE.Scene();
+//欲创建一个mesh，则需创建几何体和材质
+
+//创建几何体，一个包含盒子信息的立方几何体(BoxGeometry)
+const boxWidth = 1;
+const boxHeight = 1;
+const boxDepth = 1;
+const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+//创建材质，然后创建一个基本的材质并设置它的颜色. 
+//颜色的值可以用css方式和十六进制来表示。
+const material = new THREE.MeshBasicMaterial({color: 0x44aa88});
+
+//创建网格
+const cube = new THREE.Mesh(geometry, material);
+
+//导入场景中
+scene.add(cube);
+
+//渲染出来
+renderer.render(scene, camera);
+</code></pre>
 </li>
 </ol>
 
