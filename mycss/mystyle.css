@@ -1,0 +1,9 @@
+ul.markdownIt-TOC li{
+    list-style: none;
+    font-size: 2.2rem;
+    font-weight:400;
+}
+
+ul.markdownIt-TOC,ul.markdownIt-TOC ul{
+    padding: 0%;
+}

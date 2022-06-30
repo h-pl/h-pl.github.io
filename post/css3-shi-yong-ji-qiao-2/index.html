@@ -1,0 +1,633 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>CSS3 实用技巧-布局-自适应 | 知知</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1656591794719">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://h-pl.github.io/mycss/mystyle.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            知知
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1656591794719" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    CSS3 实用技巧-布局-自适应
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2022-06-19 ·
+                    </time>
+                    
+                        <a href="https://h-pl.github.io/tag/Ljv1ZKvbu/" class="post-tags">
+                            # CSS3
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h3 id="排版布局的新规则">排版布局的新规则</h3>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>释义或用法</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>旧的布局排版</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Normal flow</td>
+<td>文档流</td>
+<td></td>
+</tr>
+<tr>
+<td>新的布局排版</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><kbd>Flex和Grid</kbd></td>
+<td>定义流</td>
+<td><code>整体</code>属性</td>
+</tr>
+<tr>
+<td>子元素为复合属性</td>
+<td></td>
+<td>定义流与文档流的区别是影响子元素</td>
+</tr>
+<tr>
+<td><code>display: inline-flex;</code></td>
+<td>对外表现为块，看似<code>block</code></td>
+<td>弹性-Flex</td>
+</tr>
+<tr>
+<td><code>display: inline-grid;</code></td>
+<td>对外表现为行内，看似<code>inline-block</code></td>
+<td>网格-Grid</td>
+</tr>
+<tr>
+<td><kbd>弹性布局-Flex</kbd></td>
+<td>一维布局</td>
+<td></td>
+</tr>
+<tr>
+<td>flex-direction</td>
+<td>主轴方向，row从左至右</td>
+<td>row-reverse，反向</td>
+</tr>
+<tr>
+<td></td>
+<td>辅助轴，column，从上至下</td>
+<td>column-reverse，反向</td>
+</tr>
+<tr>
+<td>flex-wrap</td>
+<td>是否换行</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>nowrap</td>
+<td>不换行，default</td>
+</tr>
+<tr>
+<td></td>
+<td>wrap</td>
+<td>有需要换行</td>
+</tr>
+<tr>
+<td></td>
+<td>wrap-reverse</td>
+<td>有需要反向换行</td>
+</tr>
+<tr>
+<td>order</td>
+<td>数值越大有靠后，越小越靠前，可以取负值，不能取小数。</td>
+<td>视觉上的次序</td>
+</tr>
+<tr>
+<td>flex-grow</td>
+<td>控制元素扩张</td>
+<td>主轴必须存在空白</td>
+</tr>
+<tr>
+<td></td>
+<td>子元素default=0，不扩张</td>
+<td></td>
+</tr>
+<tr>
+<td>flex-shrink</td>
+<td>控制元素收缩</td>
+<td>主轴空间不足时</td>
+</tr>
+<tr>
+<td></td>
+<td>子元素default=1，且不能取负值。0 表示不收缩。</td>
+<td></td>
+</tr>
+<tr>
+<td>flex-basis</td>
+<td>主轴方向尺寸-宽度或高度</td>
+<td>元素在扩张、收缩前，主轴上占用的长度</td>
+</tr>
+<tr>
+<td>对齐</td>
+<td>前缀-后缀=6种组合:取值</td>
+<td></td>
+</tr>
+<tr>
+<td>前缀</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>justify-</td>
+<td>主轴-横向对齐</td>
+<td></td>
+</tr>
+<tr>
+<td>align-</td>
+<td>辅轴-纵向对齐</td>
+<td></td>
+</tr>
+<tr>
+<td>后缀</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-content</td>
+<td>所有子元素在父元素中如何摆放</td>
+<td></td>
+</tr>
+<tr>
+<td>-items</td>
+<td>某行或列在某方向上如何对齐</td>
+<td></td>
+</tr>
+<tr>
+<td>-self</td>
+<td>某个元素在某方向上如何对齐，即对于上一个属性的个别修正</td>
+<td></td>
+</tr>
+<tr>
+<td>6种组合的取值</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>stretch</td>
+<td>拉伸至填满</td>
+<td>flex布局，主轴上不能使用这个值</td>
+</tr>
+<tr>
+<td></td>
+<td>用<code>flex-grow</code>、<code>flex-shrink</code>来控制伸缩</td>
+<td></td>
+</tr>
+<tr>
+<td>center</td>
+<td>某方向的中间</td>
+<td></td>
+</tr>
+<tr>
+<td>flex-start、flex-end</td>
+<td>开始或结束</td>
+<td>flex-start 是默认值</td>
+</tr>
+<tr>
+<td>baseline</td>
+<td>基于基线对齐</td>
+<td>当前元素的底边位置就是基线</td>
+</tr>
+<tr>
+<td>space-between</td>
+<td>space 空白进行合理分配，只有带 content 的属性才用。</td>
+<td></td>
+</tr>
+<tr>
+<td>between</td>
+<td>两个子元素之间平均分配空白；</td>
+<td></td>
+</tr>
+<tr>
+<td>space-around</td>
+<td>around 环绕，两子元素间是两倍空白，而子元素和父元素间是一倍空白</td>
+<td></td>
+</tr>
+<tr>
+<td>space-evenly</td>
+<td>evenly 平均分配，所有元素空白统统相等。</td>
+<td></td>
+</tr>
+<tr>
+<td><kbd>网格布局-Grid</kbd></td>
+<td>二维xy布局</td>
+<td>子元素 display: subgrid;</td>
+</tr>
+<tr>
+<td></td>
+<td>先画出格子，再往里面放东西。</td>
+<td>显式网格和隐式网格</td>
+</tr>
+<tr>
+<td>网格线</td>
+<td>网格中的每一条线</td>
+<td></td>
+</tr>
+<tr>
+<td>网格单元格</td>
+<td>网格中的每一个单元格</td>
+<td></td>
+</tr>
+<tr>
+<td>网格区域</td>
+<td>几个单元格组成的矩形</td>
+<td></td>
+</tr>
+<tr>
+<td>网格轨道</td>
+<td>两个相邻网格线之间的空间</td>
+<td>某一行或某一列</td>
+</tr>
+<tr>
+<td>网格项</td>
+<td>网格内子元素</td>
+<td></td>
+</tr>
+<tr>
+<td>grid-</td>
+<td>网格布局固定的前缀</td>
+<td></td>
+</tr>
+<tr>
+<td>-template-</td>
+<td>模板，显式网格</td>
+<td></td>
+</tr>
+<tr>
+<td>-auto-</td>
+<td>自动，隐式网格</td>
+<td></td>
+</tr>
+<tr>
+<td>-rows</td>
+<td>水平网格线的垂直间隔</td>
+<td>行</td>
+</tr>
+<tr>
+<td>-columns</td>
+<td>垂直网格线的水平间距</td>
+<td>列</td>
+</tr>
+<tr>
+<td><a href="#%E5%AE%9A%E4%BD%8D%E7%AE%80%E5%86%99">网格定位简写</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-start</td>
+<td><code>grid-column-start:2;grid-row-start:2;</code></td>
+<td>坐标为网格线(2,2)<strong>右下</strong></td>
+</tr>
+<tr>
+<td>-end</td>
+<td><code>grid-column-end:2;grid-row-end:2;</code></td>
+<td>坐标为网格线(2,2)<strong>左上</strong></td>
+</tr>
+<tr>
+<td></td>
+<td>grid-template-columns</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>grid-template-rows</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>grid-auto-columns</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>grid-auto-rows</td>
+<td></td>
+</tr>
+<tr>
+<td>取值</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>repeat(6,100px)</td>
+<td>6个100px的间隔</td>
+<td></td>
+</tr>
+<tr>
+<td>50px 30px 1fr 3fr 5fr</td>
+<td>5个间隔:1个50px,1个30px,剩下空白9等分(各占1,3,5份)</td>
+<td></td>
+</tr>
+<tr>
+<td>[first-start]</td>
+<td>[] 表示网格线，里面是网格线的名字</td>
+<td></td>
+</tr>
+<tr>
+<td>span xxx</td>
+<td>跨越某网格线</td>
+<td></td>
+</tr>
+<tr>
+<td>网格细节</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>grid-column-gap</td>
+<td>网格线的粗细-间隔，default=0</td>
+<td></td>
+</tr>
+<tr>
+<td>grid-row-gap</td>
+<td>网格线的粗细-间隔，default=0</td>
+<td></td>
+</tr>
+<tr>
+<td>grid-gap</td>
+<td>上述两个的复合属性</td>
+<td></td>
+</tr>
+<tr>
+<td>grid-auto-flow</td>
+<td>自动控制没有固定的元素</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>row</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>column</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>dense 密集的</td>
+<td></td>
+</tr>
+<tr>
+<td>grid-template-areas</td>
+<td>画棋盘，填棋子</td>
+<td>填名字，空为<code>.</code></td>
+</tr>
+<tr>
+<td>对齐</td>
+<td>子元素并不会占满格子➡️具体排布靠对齐属性</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>justify 横向对齐</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>align 纵向对齐</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="网格布局">网格布局</h3>
+<h4 id="定位简写">定位简写</h4>
+<p>-start 网格线右侧，-end 网格线左侧</p>
+<pre><code class="language-css">.grid-item {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 4;
+}
+/* 简写为 */
+.grid-item {
+    grid-column-start: 1/3;
+    grid-row-start: 2/4;
+}
+</code></pre>
+<pre><code class="language-css">.grid-item {
+    grid-column-start: 1;
+    grid-column-end: span 1;
+    grid-row-start: 2;
+    grid-row-end: span 2;
+}
+</code></pre>
+<h4 id="areas-定位">areas 定位</h4>
+<pre><code class="language-css">.grid-box {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+grid-template-rows: 1fr 1fr 1fr;
+grid-template-areas: 
+&quot;. chess .&quot;
+&quot;. chess .&quot;
+&quot;.   .   .&quot;;
+}
+.grid-item {
+min-height: 100px;
+grid-area: chess;
+}
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/xin-gai-nian-ting-li-lian-xi/" class="post-title gt-a-link">
+                    新概念听力练习
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/h-pl" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

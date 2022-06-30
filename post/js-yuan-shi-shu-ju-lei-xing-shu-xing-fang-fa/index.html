@@ -1,0 +1,525 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>Js 原始数据类型、属性、方法 | 知知</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1656591794719">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://h-pl.github.io/mycss/mystyle.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            知知
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1656591794719" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Js 原始数据类型、属性、方法
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2022-05-26 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id="原始类型string">原始类型String</h2>
+<h2 id="方法">方法</h2>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>释义</th>
+<th>相当于</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Data.now()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>JSON.stringify()</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="array">Array</h2>
+<p>🎓<a href="https://zh.javascript.info/array-methods#zong-jie">数组的属性或方法</a><br>
+☢️请注意，<code>sort</code>，<code>reverse</code> 和 <code>splice</code> 方法修改的是数组本身。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>释义</th>
+<th>相当于</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arr.push(...items)</td>
+<td>从尾端添加元素</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.pop()</td>
+<td>从尾端提取元素</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.shift()</td>
+<td>从首端提取元素</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.unshift(...items)</td>
+<td>从首端添加元素</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.slice([start], [end])</td>
+<td>arr.slice()复制<strong>新数组</strong></td>
+<td></td>
+<td><code>arr.slice().sort();</code></td>
+</tr>
+<tr>
+<td>arr.splice(a, b, &quot;xxx&quot;);</td>
+<td>添加，删除和插入元素</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.map()</td>
+<td>对数组的每个元素都调用函数，并返回结果数组。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.sort</td>
+<td>对数组进行 原位（in-place） 排序</td>
+<td>转换为字符串，再比较</td>
+<td>arr.sort( (a, b) =&gt; a - b );</td>
+</tr>
+<tr>
+<td>arr.reverse</td>
+<td>颠倒 arr 中元素的顺序</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>str.split(分隔符)</td>
+<td>给定的分隔符 delim 将字符串分割成一个数组</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>let name of arr</td>
+<td>遍历数组</td>
+<td><strong>of</strong>，避免使用 <code>in</code></td>
+<td>&quot;test&quot;.split('')</td>
+</tr>
+<tr>
+<td>arr.join(glue)</td>
+<td>一串由 glue 粘合的 arr 项</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>arr.reduce(func(accumulator, item, index, array),initial)</td>
+<td>accumulator 累加器</td>
+<td>始终指定初始值</td>
+<td></td>
+</tr>
+<tr>
+<td>arr.reduceRight</td>
+<td>和 arr.reduce 方法的功能一样，只是遍历为<strong>从右到左</strong>。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Array.isArray([])</td>
+<td>true</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="map">Map</h2>
+<p>Map 是一个带键的数据项的集合，就像一个 Object 一样。<br>
+<strong>但是</strong>，</p>
+<ul>
+<li>它们最大的差别是 Map 允许任何类型的键（key）。</li>
+<li>迭代的顺序与插入值的顺序相同。与普通的 Object 不同，Map 保留了此顺序。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>属性或方法</th>
+<th>释义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new Map() </code></td>
+<td>创建 map</td>
+<td></td>
+</tr>
+<tr>
+<td>map.set(key, value)</td>
+<td>根据键存储值</td>
+<td></td>
+</tr>
+<tr>
+<td>map.get(key)</td>
+<td>根据键来返回值，如果 map 中不存在对应的 key，则返回 undefined</td>
+<td></td>
+</tr>
+<tr>
+<td>map.has(key)</td>
+<td>如果 key 存在则返回 true，否则返回 false</td>
+<td></td>
+</tr>
+<tr>
+<td>map.delete(key)</td>
+<td>删除指定键的值</td>
+<td></td>
+</tr>
+<tr>
+<td>map.clear()</td>
+<td>清空 map</td>
+<td></td>
+</tr>
+<tr>
+<td>map.size</td>
+<td>返回当前元素个数</td>
+<td></td>
+</tr>
+<tr>
+<td>迭代</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>map.keys()</td>
+<td>遍历并返回一个包含所有键的可迭代对象</td>
+<td></td>
+</tr>
+<tr>
+<td>map.values()</td>
+<td>遍历并返回一个包含所有值的可迭代对象</td>
+<td></td>
+</tr>
+<tr>
+<td>map.entries()</td>
+<td>遍历并返回一个包含所有实体 [key, value] 的可迭代对象</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="weakmap">WeakMap</h2>
+<p>WeakMap 的主要应用场景是 <strong>额外数据的存储</strong>。用于解决垃圾回收机制(<strong>因可达性</strong>)不能完成的内存释放。<br>
+☢️和 Map 的第一个不同点就是，WeakMap 的键必须是对象，不能是原始值。<br>
+WeakMap <strong>不支持</strong>迭代以及 keys()，values() 和 entries() 方法。所以没有办法获取 WeakMap 的所有键或值。WeakMap 只有以下的方法：</p>
+<ul>
+<li>weakMap.get(key)</li>
+<li>weakMap.set(key, value)</li>
+<li>weakMap.delete(key)</li>
+<li>weakMap.has(key)</li>
+</ul>
+<h2 id="set">Set</h2>
+<p>Set 是一个特殊的类型集合 —— “值的集合”（没有键），它的每一个值只能出现一次。</p>
+<table>
+<thead>
+<tr>
+<th>属性或方法</th>
+<th>释义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>new Set(iterable)</td>
+<td>创建一个 set，如果提供了一个 iterable 对象（通常是数组），将会从数组里面复制值到 set 中。</td>
+<td></td>
+</tr>
+<tr>
+<td>set.add(value)</td>
+<td>添加一个值，返回 set 本身</td>
+<td></td>
+</tr>
+<tr>
+<td>set.delete(value)</td>
+<td>删除值，如果 value 在这个方法调用的时候存在则返回 true ，否则返回 false。</td>
+<td></td>
+</tr>
+<tr>
+<td>set.has(value)</td>
+<td>如果 value 在 set 中，返回 true，否则返回 false。</td>
+<td></td>
+</tr>
+<tr>
+<td>set.clear()</td>
+<td>清空 set。</td>
+<td></td>
+</tr>
+<tr>
+<td>set.size</td>
+<td>返回元素个数。</td>
+<td></td>
+</tr>
+<tr>
+<td>迭代</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>set.keys()</td>
+<td>遍历并返回一个包含所有值的可迭代对象，</td>
+<td></td>
+</tr>
+<tr>
+<td>set.values()</td>
+<td>与 set.keys() 作用相同，这是为了兼容 Map，</td>
+<td></td>
+</tr>
+<tr>
+<td>set.entries()</td>
+<td>遍历并返回一个包含所有的实体 [value, value] 的可迭代对象，它的存在也是为了兼容 Map。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="weakset">weakSet</h2>
+<ul>
+<li>与 Set 类似，但是我们只能向 WeakSet 添加对象（而不能是原始值）。</li>
+<li>对象只有在其它某个（些）地方能被访问的时候，才能留在 WeakSet 中。</li>
+<li>跟 Set 一样，WeakSet 支持 add，has 和 delete 方法，但不支持 size 和 keys()，并且不可迭代。</li>
+<li>☢️WeakMap 和 WeakSet 最明显的<strong>局限性</strong>就是不能迭代，并且无法获取所有当前内容。</li>
+</ul>
+<h2 id="object">Object</h2>
+<p>对于普通对象，下列这些方法是可用的：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>释义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object.keys(obj)</td>
+<td>返回一个包含该对象所有的键的数组。</td>
+<td></td>
+</tr>
+<tr>
+<td>Object.values(obj)</td>
+<td>返回一个包含该对象所有的值的数组。</td>
+<td></td>
+</tr>
+<tr>
+<td>Object.entries(obj)</td>
+<td>返回一个包含该对象所有 [key, value] 键值对的数组。</td>
+<td></td>
+</tr>
+<tr>
+<td>Object.fromEntries(array)</td>
+<td>将结果转回成对象。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>☢️Object.keys/values/entries 会忽略 symbol 属性。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/vue-zhi-ling-yu-xiu-shi-fu/" class="post-title gt-a-link">
+                    Vue 指令与修饰符、过滤器
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/h-pl" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
