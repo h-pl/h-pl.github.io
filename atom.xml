@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://h-pl.github.io</id>
+    <title>知知</title>
+    <updated>2024-10-30T03:26:08.869Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://h-pl.github.io"/>
+    <link rel="self" href="https://h-pl.github.io/atom.xml"/>
+    <logo>https://h-pl.github.io/images/avatar.png</logo>
+    <icon>https://h-pl.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, 知知</rights>
+    <entry>
+        <title type="html"><![CDATA[奇怪的专业名词缩写]]></title>
+        <id>https://h-pl.github.io/post/tu-zhi-shang-de-zhuan-ye-ming-ci-suo-xie/</id>
+        <link href="https://h-pl.github.io/post/tu-zhi-shang-de-zhuan-ye-ming-ci-suo-xie/">
+        </link>
+        <updated>2022-01-21T07:11:56.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dynamo 的神奇拓展包]]></title>
+        <id>https://h-pl.github.io/post/dynamo-de-shen-qi-tuo-zhan-bao/</id>
+        <link href="https://h-pl.github.io/post/dynamo-de-shen-qi-tuo-zhan-bao/">
+        </link>
+        <updated>2022-01-18T05:37:10.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Three.js 笔记]]></title>
+        <id>https://h-pl.github.io/post/threejs-bi-ji-mu-lu/</id>
+        <link href="https://h-pl.github.io/post/threejs-bi-ji-mu-lu/">
+        </link>
+        <updated>2022-01-11T12:17:57.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[新概念Ⅱ中有趣的句子]]></title>
+        <id>https://h-pl.github.io/post/xin-gai-nian-iizhong-you-qu-de-ju-zi/</id>
+        <link href="https://h-pl.github.io/post/xin-gai-nian-iizhong-you-qu-de-ju-zi/">
+        </link>
+        <updated>2022-01-11T04:48:02.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[评估 HVAC 系统在碳中和的优化方向]]></title>
+        <id>https://h-pl.github.io/post/hvac-xi-tong-dui-huan-jing-de-ying-xiang/</id>
+        <link href="https://h-pl.github.io/post/hvac-xi-tong-dui-huan-jing-de-ying-xiang/">
+        </link>
+        <updated>2022-01-04T03:26:19.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[半路出家学前端]]></title>
+        <id>https://h-pl.github.io/post/ban-lu-chu-jia-xue-qian-duan/</id>
+        <link href="https://h-pl.github.io/post/ban-lu-chu-jia-xue-qian-duan/">
+        </link>
+        <updated>2021-11-23T06:56:47.000Z</updated>
+    </entry>
+</feed>
