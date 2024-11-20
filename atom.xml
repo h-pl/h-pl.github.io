@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://h-pl.github.io</id>
+    <title>知知</title>
+    <updated>2024-11-20T02:52:14.583Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://h-pl.github.io"/>
+    <link rel="self" href="https://h-pl.github.io/atom.xml"/>
+    <logo>https://h-pl.github.io/images/avatar.png</logo>
+    <icon>https://h-pl.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, 知知</rights>
+    <entry>
+        <title type="html"><![CDATA[win10下安装ultralytics]]></title>
+        <id>https://h-pl.github.io/post/win10-xia-an-zhuang-ultralytics/</id>
+        <link href="https://h-pl.github.io/post/win10-xia-an-zhuang-ultralytics/">
+        </link>
+        <updated>2024-11-20T02:15:32.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[windows训练模型及适配瑞芯微3588]]></title>
+        <id>https://h-pl.github.io/post/windows-xun-lian-mo-xing-ji-gua-pei-rui-xin-wei-3588/</id>
+        <link href="https://h-pl.github.io/post/windows-xun-lian-mo-xing-ji-gua-pei-rui-xin-wei-3588/">
+        </link>
+        <updated>2024-11-13T05:25:06.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[如何设置UWP的开机自启动]]></title>
+        <id>https://h-pl.github.io/post/ru-he-she-zhi-uwp-de-kai-ji-zi-qi-dong/</id>
+        <link href="https://h-pl.github.io/post/ru-he-she-zhi-uwp-de-kai-ji-zi-qi-dong/">
+        </link>
+        <updated>2024-11-13T01:56:56.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[面向newbing编程Demo清单]]></title>
+        <id>https://h-pl.github.io/post/mian-xiang-newbing-bian-cheng-demo-qing-dan/</id>
+        <link href="https://h-pl.github.io/post/mian-xiang-newbing-bian-cheng-demo-qing-dan/">
+        </link>
+        <updated>2024-11-12T09:01:40.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[细说yolov5的detect参数与命令行]]></title>
+        <id>https://h-pl.github.io/post/xi-shuo-yolov5-de-detect-can-shu-yu-ming-ling-xing/</id>
+        <link href="https://h-pl.github.io/post/xi-shuo-yolov5-de-detect-can-shu-yu-ming-ling-xing/">
+        </link>
+        <updated>2024-11-12T02:02:08.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[WSL下Docke内开始训练第一个yolov5s模型]]></title>
+        <id>https://h-pl.github.io/post/wsl-xia-docke-nei-kai-shi-xun-lian-di-yi-ge-yolov5s-mo-xing/</id>
+        <link href="https://h-pl.github.io/post/wsl-xia-docke-nei-kai-shi-xun-lian-di-yi-ge-yolov5s-mo-xing/">
+        </link>
+        <updated>2024-11-11T06:37:35.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[WSL通过Docker安装RKNN-Toolkit2环境]]></title>
+        <id>https://h-pl.github.io/post/wsl-tong-guo-docker-an-zhuang-rknn-toolkit2-huan-jing/</id>
+        <link href="https://h-pl.github.io/post/wsl-tong-guo-docker-an-zhuang-rknn-toolkit2-huan-jing/">
+        </link>
+        <updated>2024-10-30T05:36:26.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[奇怪的专业名词缩写]]></title>
+        <id>https://h-pl.github.io/post/tu-zhi-shang-de-zhuan-ye-ming-ci-suo-xie/</id>
+        <link href="https://h-pl.github.io/post/tu-zhi-shang-de-zhuan-ye-ming-ci-suo-xie/">
+        </link>
+        <updated>2022-01-21T07:11:56.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dynamo 的神奇拓展包]]></title>
+        <id>https://h-pl.github.io/post/dynamo-de-shen-qi-tuo-zhan-bao/</id>
+        <link href="https://h-pl.github.io/post/dynamo-de-shen-qi-tuo-zhan-bao/">
+        </link>
+        <updated>2022-01-18T05:37:10.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Three.js 笔记]]></title>
+        <id>https://h-pl.github.io/post/threejs-bi-ji-mu-lu/</id>
+        <link href="https://h-pl.github.io/post/threejs-bi-ji-mu-lu/">
+        </link>
+        <updated>2022-01-11T12:17:57.000Z</updated>
+    </entry>
+</feed>
