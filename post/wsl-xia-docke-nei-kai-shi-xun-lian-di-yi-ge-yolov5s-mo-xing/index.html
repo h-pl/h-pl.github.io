@@ -1,0 +1,738 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>WSL下Docke内开始训练第一个yolov5s模型 | 知之</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1770872188359">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a href="/">
+        <div class="navbar-brand">
+            <img class="user-avatar" src="/images/avatar.png" alt="头像">
+            <div class="site-name gt-c-content-color-first">
+                知之
+            </div>
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                            <a href="/" class="menu gt-a-link">
+                                首页
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/archives" class="menu gt-a-link">
+                                归档
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/tags" class="menu gt-a-link">
+                                标签
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/post/about" class="menu gt-a-link">
+                                关于
+                            </a>
+                            
+                </div>
+                
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1770872188359"
+                action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    WSL下Docke内开始训练第一个yolov5s模型
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2024-11-11 ·
+                    </time>
+                    
+                        <a href="https://h-pl.github.io/tag/gong-lue/" class="post-tags">
+                            # 攻略
+                        </a>
+                    
+                        <a href="https://h-pl.github.io/tag/wsl/" class="post-tags">
+                            # WSL
+                        </a>
+                    
+                        <a href="https://h-pl.github.io/tag/docker/" class="post-tags">
+                            # Docker
+                        </a>
+                    
+                        <a href="https://h-pl.github.io/tag/yolov5/" class="post-tags">
+                            # yolov5
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id="1训练与环境">1.训练与环境</h2>
+<p>Windows下的WSL，内部安装wsl，在wsl安装ubuntu22.04。👍还是gpu快一些。<br>
+硬件：</p>
+<ul>
+<li>CPU：Intel i5-1135G7@2.4Ghz</li>
+<li>内存：16G</li>
+<li>GPU：NVIDIA GeForce MX450</li>
+</ul>
+<h3 id="11tips">1.1tips</h3>
+<p>🤡镜像内部的Ubuntu系统和wsl的系统版本无关，是依据于镜像配置决定的。</p>
+<h2 id="2使用gpu进行训练的流程"><strong>2.使用GPU进行训练的流程</strong></h2>
+<pre><code class="language-bash">#启用gpu，映射硬盘，并进入docker
+#为防止BUS error，使用增加共享内存大小，进入docker，指定了内存大小，
+docker run --gpus all -it -v /mnt/d/3588:/mnt/3588 --shm-size=16g rknn3588:dev /bin/bash
+#使用train.py
+#根据自己的硬件条件调整，batch-size、workers
+python train.py --data mydata.yaml --weights runs/train/exp11/weights/best.pt --cfg yolov5s.yaml --batch-size 4 --epochs 100 --workers 2
+#接着训练
+python train.py --resume --weights runs/train/exp11/weights/last.pt
+#或手动接续训练，best.pt改成最近训练的pt
+python train.py --data mydata.yaml --weights runs/train/exp11/weights/best.pt --cfg yolov5s.yaml --batch-size 4 --epochs 100 --workers 2
+</code></pre>
+<h3 id="21-训练结果">2.1 训练结果</h3>
+<h3 id="22-检测pt">2.2 检测pt</h3>
+<p>多使用yolov5工具包自带的detect.py，可以接受图片和视频。详情可以看</p>
+<pre><code class="language-python"># 检测多张图片并保存检测结果；可作为自动检测的工具
+python detect.py --weights model1.pt --source path/to/images --save-txt
+#检测多张图片输出检测结果，其中检测结果中又置信度
+python detect.py --weights model1.pt --source path/to/images --save-txt --save-conf
+#检测视频流，每隔150帧检测一次，保存检测结果
+python detect.py --weights vestAndHelmet.pt --source testVideo/video.mp4 --save-txt --vid-stride 150
+ #检测视频流，每隔25帧检测一次，保存检测部位的裁剪图片
+python detect.py --weights vestAndHelmet.pt --source testVideo/video.mp4  --save-txt --save-crop --vid-stride 25
+</code></pre>
+<p><a href="/post/xi-shuo-yolov5-de-detect-can-shu-yu-ming-ling-xing">《细说detect的参数》</a></p>
+<hr>
+<h2 id="3关于硬件的一些问题">3.关于硬件的一些问题</h2>
+<h3 id="31-数据加载器的内存问题bus-error">3.1. 数据加载器的内存问题（Bus Error）</h3>
+<p>从错误信息来看，出现了 <code>Bus error</code>，通常是由于 <code>DataLoader</code> 的工作线程用尽了共享内存。你可以通过调整数据加载器的设置来增加共享内存限制，并确保 GPU 正常工作。</p>
+<h4 id="解决方法">解决方法：</h4>
+<p>你可以尝试增加 Docker 容器的共享内存（<code>shm</code>）大小，或调整 <code>DataLoader</code> 的工作线程数量。</p>
+<p><strong>增加共享内存：</strong></p>
+<p>在运行 Docker 容器时，可以使用 <code>--shm-size</code> 参数来增加共享内存大小。例如，增加到 <code>16GB</code>：</p>
+<pre><code class="language-bash">docker run --gpus all -it -v /mnt/d/3588:/mnt/3588 --shm-size=16g rknn3588:dev /bin/bash
+</code></pre>
+<p><strong>减少 DataLoader 的工作线程：</strong></p>
+<p>你可以减少 <code>DataLoader</code> 使用的工作线程数量，避免内存不足。将 <code>workers</code> 数量减少为 1 或 2，修改训练命令中的 <code>--workers</code> 参数：</p>
+<pre><code class="language-bash">python train.py --data mydata.yaml --weights runs/train/exp11/weights/best.pt --cfg yolov5s.yaml --batch-size 4 --epochs 100 --workers 2
+</code></pre>
+<h3 id="31-硬件与batch-size-workers的设置">3.1. 硬件与batch-size、workers的设置</h3>
+<p><code>batch-size</code> 和 <code>workers</code> 的设置不仅仅影响收 GPU 性能，还会受系统内存 (RAM) 和 GPU 内存 (VRAM) 的限制，尤其是在内存较小的系统中。<strong>内存往往成为训练的瓶颈。</strong><br>
+如：我的<a href="#1%E7%8E%AF%E5%A2%83">硬件配置</a>下，使用命令<code>python train.py --data mydata.yaml --weights runs/train/exp11/weights/best.pt --cfg yolov5s.yaml --batch-size 4 --epochs 100 --workers 2</code>后，硬件占用情况如下：</p>
+<table>
+<thead>
+<tr>
+<th>硬件</th>
+<th>型号</th>
+<th>占用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU</td>
+<td>Intel i5-1135G7@2.4Ghz</td>
+<td>40%左右</td>
+</tr>
+<tr>
+<td>GPUNVIDIA GeForce MX450</td>
+<td>8%左右</td>
+<td></td>
+</tr>
+<tr>
+<td>内存</td>
+<td>16G@3200Mhz</td>
+<td>40%左右</td>
+</tr>
+</tbody>
+</table>
+<h4 id="31硬件与-batch-size-workers-经验关系表">3.1.硬件与 <code>batch-size</code>、<code>workers</code> 经验关系表</h4>
+<table>
+<thead>
+<tr>
+<th><strong>硬件配置</strong></th>
+<th><strong>系统内存</strong></th>
+<th><strong>GPU 内存</strong></th>
+<th><strong>建议的 <code>batch-size</code></strong></th>
+<th><strong>建议的 <code>workers</code></strong></th>
+<th><strong>备注</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>低端 CPU (如 i5-1135G7)</strong></td>
+<td>8GB - 16GB</td>
+<td>2GB - 4GB</td>
+<td>1 - 4</td>
+<td>1 - 2</td>
+<td><strong>内存瓶颈</strong>，<code>batch-size</code> 和 <code>workers</code> 都需控制，避免内存溢出。GPU 内存限制较小，<code>workers</code> 数量要少。</td>
+</tr>
+<tr>
+<td><strong>中端 CPU (如 i7 系列)</strong></td>
+<td>16GB - 32GB</td>
+<td>4GB - 6GB</td>
+<td>4 - 8</td>
+<td>2 - 4</td>
+<td>可处理较大的 <code>batch-size</code> 和 <code>workers</code>，但 GPU 内存限制仍然存在。适当增加 <code>workers</code>。</td>
+</tr>
+<tr>
+<td><strong>高端 CPU (如 i9 系列, AMD Ryzen 9)</strong></td>
+<td>32GB - 64GB</td>
+<td>8GB - 16GB</td>
+<td>8 - 16</td>
+<td>4 - 8</td>
+<td><strong>内存和 GPU 都足够</strong>，可以处理较大的 <code>batch-size</code> 和更多的 <code>workers</code>，利用多线程加速数据加载。</td>
+</tr>
+<tr>
+<td><strong>入门级 GPU (如 MX450)</strong></td>
+<td>8GB - 16GB</td>
+<td>2GB - 4GB</td>
+<td>2 - 8</td>
+<td>2 - 4</td>
+<td>内存较小，<strong>限制 <code>batch-size</code></strong>，需要减少 <code>workers</code>。较低的 GPU 内存影响 <code>batch-size</code>。</td>
+</tr>
+<tr>
+<td><strong>中端 GPU (如 GTX 1660 Ti, RTX 3050)</strong></td>
+<td>16GB - 32GB</td>
+<td>6GB - 8GB</td>
+<td>8 - 16</td>
+<td>4 - 6</td>
+<td>GPU 内存可支撑较大的 <code>batch-size</code>，增加 <code>workers</code> 以加速数据加载。内存仍有一定限制。</td>
+</tr>
+<tr>
+<td><strong>高端 GPU (如 RTX 3080, RTX 4090)</strong></td>
+<td>32GB - 64GB</td>
+<td>10GB - 24GB</td>
+<td>16 - 32</td>
+<td>8 - 16</td>
+<td>高内存和 GPU 内存，<strong>最大化 <code>batch-size</code></strong>，并且可以使用更多的 <code>workers</code>。</td>
+</tr>
+<tr>
+<td><strong>多 GPU 环境</strong></td>
+<td>32GB - 128GB</td>
+<td>8GB - 24GB (每个 GPU)</td>
+<td>16 - 64</td>
+<td>8 - 16</td>
+<td><strong>多卡训练</strong>时，每个 GPU 使用更大的 <code>batch-size</code>，<code>workers</code> 数量随之增加。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="32内存对-batch-size-和-workers-的影响">3.2.内存对 <code>batch-size</code> 和 <code>workers</code> 的影响：</h4>
+<ol>
+<li>
+<p><strong>系统内存 (RAM)</strong>：</p>
+<ul>
+<li><strong>高内存系统</strong>：当系统内存较大时，可以使用更多的 <code>workers</code> 和更大的 <code>batch-size</code>。在训练时，<code>workers</code> 用于加载数据并传递给模型，内存较大可以并行加载更多的数据。</li>
+<li><strong>低内存系统</strong>：当系统内存较小（例如 8GB 以下）时，增加 <code>workers</code> 会导致内存占用过高，可能引发系统性能下降或内存溢出。在这种情况下，应该限制 <code>workers</code> 数量，并使用较小的 <code>batch-size</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>GPU 内存 (VRAM)</strong>：</p>
+<ul>
+<li><strong>低 GPU 内存</strong>（如 2GB-4GB）时，<code>batch-size</code> 必须较小，否则 GPU 会因内存不足而导致 OOM (Out Of Memory) 错误。如果显存较小，应该尽量减少 <code>batch-size</code>，或者使用 <code>half precision</code> (FP16) 来减少显存占用。</li>
+<li><strong>较大 GPU 内存</strong>（如 8GB-16GB）可以处理更大的 <code>batch-size</code>。但是，如果显存不足，依然会导致 OOM 错误。在这种情况下，使用 <code>gradient checkpointing</code> 或减少 <code>batch-size</code> 仍然是有效的选择。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>workers</code> 的选择</strong>：</p>
+<ul>
+<li><strong>增加 <code>workers</code></strong> 可以加速数据加载，特别是在使用 SSD 存储时。但是每增加一个 worker 就会占用额外的系统内存，因此在内存受限时，需要减少 <code>workers</code> 数量。</li>
+<li><strong>减少 <code>workers</code></strong> 可以减轻内存压力，但可能导致数据加载成为训练的瓶颈，尤其是在硬盘读写速度较慢时。</li>
+</ul>
+</li>
+</ol>
+<h4 id="33-实际操作建议">3.3. 实际操作建议：</h4>
+<ul>
+<li><strong>内存受限</strong>：将 <code>batch-size</code> 控制在较小值，<code>workers</code> 设置为 2 或更少，以防止内存占用过高。</li>
+<li><strong>显存受限</strong>：减少 <code>batch-size</code> 或尝试使用 <code>half precision</code>（FP16），可以减少 GPU 显存的占用。</li>
+<li><strong>内存和显存都足够</strong>：可以增加 <code>batch-size</code> 和 <code>workers</code>，尽可能提高训练效率。</li>
+</ul>
+<h4 id="34如何调整训练参数">3.4.如何调整训练参数：</h4>
+<ol>
+<li>
+<p><strong>如果内存占用过高</strong>，可以尝试：</p>
+<ul>
+<li>降低 <code>batch-size</code>，例如从 8 调整为 4 或 2。</li>
+<li>降低 <code>workers</code>，例如将 <code>workers</code> 从 4 调整为 2 或 1。</li>
+<li>在训练时，使用较低分辨率的图像（例如将 640 降至 416 或 320）。</li>
+</ul>
+</li>
+<li>
+<p><strong>如果训练速度过慢</strong>，且内存和 GPU 显存足够，可以考虑：</p>
+<ul>
+<li>增加 <code>batch-size</code>，例如从 4 提升到 8 或 16。</li>
+<li>增加 <code>workers</code>，例如将 <code>workers</code> 从 2 增加到 4 或 6。</li>
+</ul>
+</li>
+<li>
+<p><strong>如何继续训练</strong>：</p>
+<ul>
+<li>如果需要停掉当前训练并调整参数，确保你保存了训练的检查点（<code>.pt</code> 文件）。你可以通过命令 <code>python train.py --resume --weights runs/train/exp11/weights/last.pt</code> 来继续训练，而不会丢失已训练的进度。</li>
+</ul>
+</li>
+</ol>
+<p>这样，你可以根据硬件资源来动态调整训练的参数，以确保训练高效且稳定。</p>
+<hr>
+<h2 id="4输出的参数">4.输出的参数</h2>
+<pre><code>   Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+    43/99      1.03G    0.04366    0.02842    0.00566          7        640: 100%|██████████| 55/55 00:33
+    Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 5/5 00:01
+    all         40        131      0.618      0.486      0.496       0.26
+</code></pre>
+<p>在 YOLOv5 或类似模型的训练日志中，输出的各个参数代表了训练和验证阶段的不同指标。下面是对这些参数的详细解释，整理成表格形式：</p>
+<h3 id="41训练过程中的输出参数解释">4.1.训练过程中的输出参数解释</h3>
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Epoch</strong></td>
+<td>当前训练的轮次（例如，第 43 轮 / 总 99 轮）。</td>
+</tr>
+<tr>
+<td><strong>GPU_mem</strong></td>
+<td>当前训练使用的 GPU 内存（例如 1.03GB）。表示在该轮次的训练中，GPU 的内存占用。</td>
+</tr>
+<tr>
+<td><strong>box_loss</strong></td>
+<td>边框损失（bounding box loss），表示模型预测的框与真实框之间的差异，通常使用 <strong>MSE</strong> 或 <strong>CIoU</strong> 等衡量。</td>
+</tr>
+<tr>
+<td><strong>obj_loss</strong></td>
+<td>目标损失（objectness loss），表示模型对物体存在与否的预测误差。</td>
+</tr>
+<tr>
+<td><strong>cls_loss</strong></td>
+<td>分类损失（classification loss），表示模型在物体分类方面的错误，通常使用交叉熵损失（cross-entropy）。</td>
+</tr>
+<tr>
+<td><strong>Instances</strong></td>
+<td>当前批次中使用的实例数（例如，7）。表示用于训练的图片数量。</td>
+</tr>
+<tr>
+<td><strong>Size</strong></td>
+<td>输入图片的尺寸（例如，640）。通常是输入图片的长或宽，模型的默认输入尺寸（如 640x640）表示每个图片的大小。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42验证阶段输出的参数解释">4.2.验证阶段输出的参数解释</h3>
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Class</strong></td>
+<td>当前评估的类别（例如，<code>all</code> 表示所有类别的平均值）。</td>
+</tr>
+<tr>
+<td><strong>Images</strong></td>
+<td>当前验证集中的图像数量。</td>
+</tr>
+<tr>
+<td><strong>Instances</strong></td>
+<td>当前验证集中实例的总数。</td>
+</tr>
+<tr>
+<td><strong>P (Precision)</strong></td>
+<td>精度（Precision），表示预测为正类的样本中，真正正类的比例。公式：<code>P = TP / (TP + FP)</code>。</td>
+</tr>
+<tr>
+<td><strong>R (Recall)</strong></td>
+<td>召回率（Recall），表示真实正类中被正确预测为正类的比例。公式：<code>R = TP / (TP + FN)</code>。</td>
+</tr>
+<tr>
+<td><strong>mAP50</strong></td>
+<td>在 IoU 阈值为 0.5 时的平均精度（mean Average Precision at IoU=0.5）。</td>
+</tr>
+<tr>
+<td><strong>mAP50-95</strong></td>
+<td>在 IoU 阈值从 0.5 到 0.95 范围内（包括每个 0.05 步长）的平均精度（mAP at IoU=0.5:0.95）。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43参数详细解释">4.3.参数详细解释</h3>
+<ol>
+<li>
+<p><strong>Precision (P)</strong>：精度，衡量模型预测为正类的样本中，实际为正类的比例。高精度意味着较少的假阳性（FP）。</p>
+<p>P ={TP}/{TP + FP}</p>
+</li>
+<li>
+<p><strong>Recall (R)</strong>：召回率，衡量所有真实正类中，有多少被正确地预测为正类。高召回率意味着较少的假阴性（FN）。</p>
+<p>R = {TP}/{TP + FN}</p>
+</li>
+<li>
+<p><strong>mAP50</strong>：在 IoU 阈值为 0.5 时计算的平均精度，衡量在该阈值下模型的整体检测性能。通常是衡量目标检测性能的基本指标。</p>
+</li>
+<li>
+<p><strong>mAP50-95</strong>：在多个不同的 IoU 阈值下（从 0.5 到 0.95，每 0.05 步长）计算的平均精度。它更严格地评估了模型在不同重叠区域的检测精度。</p>
+</li>
+<li>
+<p><strong>TP (True Positives)</strong>：真正例，表示模型正确预测为正类的样本数。</p>
+</li>
+<li>
+<p><strong>FP (False Positives)</strong>：假正例，表示模型错误预测为正类的样本数。</p>
+</li>
+<li>
+<p><strong>FN (False Negatives)</strong>：假负例，表示模型错误预测为负类的样本数。</p>
+</li>
+</ol>
+<h3 id="44训练中的一些特定指标解释">4.4.训练中的一些特定指标解释：</h3>
+<ul>
+<li>
+<p><strong>box_loss, obj_loss, cls_loss</strong>：这些是反映训练中模型在不同任务上（定位、物体存在性、分类）的表现的损失值。较低的损失值意味着模型在这些任务上表现更好。</p>
+</li>
+<li>
+<p><strong>GPU_mem</strong>：GPU 内存的使用情况，较高的内存占用可能意味着 <code>batch-size</code> 或模型过大，可能需要优化。</p>
+</li>
+</ul>
+<h4 id="45总结">4.5.总结：</h4>
+<ul>
+<li><strong>训练阶段</strong>：<code>box_loss</code>、<code>obj_loss</code> 和 <code>cls_loss</code> 显示了模型在训练过程中不同任务的损失。</li>
+<li><strong>验证阶段</strong>：<code>mAP50</code> 和 <code>mAP50-95</code> 显示了模型的检测性能，而 <code>P</code> 和 <code>R</code> 是检验分类性能的关键指标。</li>
+</ul>
+<p>希望这个表格能帮助你更好地理解训练日志中的参数，并优化你的训练过程！</p>
+<h2 id="其他问题">其他问题</h2>
+<h3 id="1为什么gpu没有使用">1.为什么GPU没有使用？</h3>
+<p>首先查看GPU的CUDA的驱动是否正确安装？然后查看Docker环境内的cuda驱动是否兼容？</p>
+<pre><code>#查看GPU驱动在WSL内
+nvidia-smi
+#打印结果
+Mon Nov 11 14:28:53 2024
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.183.04             Driver Version: 538.78       CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce MX450           On  | 00000000:05:00.0 Off |                  N/A |
+| N/A   51C    P8              N/A / ERR! |      0MiB /  2048MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+</code></pre>
+<h4 id="21没有使用gpu的原因">2.1.没有使用gpu的原因</h4>
+<p>发现wsl的nvidia-container-toolkit没有安装。现在只要在docker的宿主机上，即wsl内安装nvidia-container-toolkit就可以了。<br>
+不需要像过去一样，安装支持nvidia的镜像了。<s>sudo apt install nvidia-docker2</s></p>
+<h4 id="22在wsl内安装支持docker的gpu驱动">2.2.在wsl内安装支持docker的gpu驱动</h4>
+<pre><code class="language-bash">#安装nvidia-container-toolkit
+apt-get update
+apt-get install -y nvidia-container-toolkit
+systemctl restart docker
+#检查nvidia驱动
+nvidia-smi
+#使用python，检查cuda是否正常；在python交互命令行中
+&gt;&gt;import torch
+&gt;&gt;print(torch.cuda.is_available())
+TRUE
+# 看到true安装成功
+</code></pre>
+<h4 id="23查看docker内的cuda是否正常">2.3.查看docker内的cuda是否正常</h4>
+<pre><code>#进入docker，开启gpu
+docker run --gpus all -it -v /mnt/d/3588:/mnt/3588 rknn3588:dev /bin/bash
+#使用python，检查cuda是否正常；在python交互命令行中
+&gt;&gt;import torch
+&gt;&gt;print(torch.cuda.is_available())
+TRUE
+# 看到true安装成功
+</code></pre>
+<h3 id="3-修改报错语句">3. 修改报错语句</h3>
+<pre><code>train.py:307: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(amp):
+# 一条弃用的api
+</code></pre>
+<p>要排查 <code>train.py:307: FutureWarning: torch.cuda.amp.autocast(args...) is deprecated. Please use torch.amp.autocast('cuda', args...) instead</code> 这个告警，建议按照以下步骤操作：</p>
+<h4 id="31-更新代码以避免使用弃用的-api">3.1. <strong>更新代码以避免使用弃用的 API</strong></h4>
+<p>告警提示 <code>torch.cuda.amp.autocast</code> 已经被弃用，建议使用 <code>torch.amp.autocast('cuda', args...)</code> 替代。你可以修改代码中相关部分，确保使用新 API。</p>
+<p>修改前：</p>
+<pre><code class="language-python">with torch.cuda.amp.autocast(amp):
+    # 训练代码
+</code></pre>
+<p>修改后：</p>
+<pre><code class="language-python">with torch.amp.autocast('cuda', enabled=amp):
+    # 训练代码
+</code></pre>
+<p>这样可以消除警告，并且确保你使用的是 PyTorch 推荐的 API。</p>
+<h3 id="4查看-tensorboard-页面">4.查看 TensorBoard 页面</h3>
+<p>我的环境是windows下的wsl内的docker，所以需要将docker的对应端口映射出来。</p>
+<h3 id="5停止后接着上一次的训练">5.停止后接着上一次的训练</h3>
+<pre><code>#训练模型，--batch-size会影响内存占用的大小
+python train.py --data mydata.yaml --weight yolov5s.pt --cfg yolov5s.yaml --batch-size 2 --epochs 100
+#接着上一次的训练
+python train.py --data mydata.yaml --weights runs/train/exp8/weights/last.pt --cfg yolov5s.yaml --batch-size 2 --epochs 100
+</code></pre>
+<h3 id="6训练结果">6.训练结果</h3>
+<pre><code>Class       Images     Instances          P          R      mAP50   mAP50-95: 100%|██████████| 12/12 00:03
+    all         47        267       0.88      0.532      0.613      0.308
+    Vest         47        113      0.844      0.867      0.902      0.487
+  helmet         47        115      0.786      0.809      0.826      0.379
+noHelmet         47         21          1          0      0.172     0.0899
+  noVest         47         18      0.891      0.453      0.554      0.274
+</code></pre>
+<p>这是一个使用 YOLOv5 进行物体检测后的结果，显示了模型在不同类别上的检测性能。以下是对输出的解析和每个参数的说明：</p>
+<ol>
+<li>
+<p><strong>Class (类别)</strong>: 模型检测到的对象类别，包括 <code>Vest</code>（安全背心）、<code>helmet</code>（头盔）、<code>noHelmet</code>（未戴头盔）、<code>noVest</code>（未穿背心）。</p>
+</li>
+<li>
+<p><strong>Images (图像)</strong>: 用于验证模型的图像总数。这里是 47 张图像。</p>
+</li>
+<li>
+<p><strong>Instances (实例)</strong>: 数据集中标注的对象实例总数。总共有 267 个实例分布在不同类别中。</p>
+</li>
+<li>
+<p><strong>P (Precision，精确率)</strong>: 精确率衡量的是模型预测为正的样本中有多少是真正的正样本。精确率越高，说明模型对正类的预测更可靠。总的精确率是 0.88，其中 <code>Vest</code> 为 0.844，<code>helmet</code> 为 0.786，<code>noHelmet</code> 为 1，<code>noVest</code> 为 0.891。</p>
+</li>
+<li>
+<p><strong>R (Recall，召回率)</strong>: 召回率衡量的是所有真实的正样本中，有多少被模型正确识别。召回率较低说明漏检率较高。整体的召回率是 0.532，其中 <code>Vest</code> 的召回率为 0.867，<code>helmet</code> 为 0.809，<code>noHelmet</code> 的召回率为 0，<code>noVest</code> 为 0.453。</p>
+</li>
+<li>
+<p><strong>mAP50 (mean Average Precision at IoU 0.5，平均精度均值，IoU = 0.5)</strong>: mAP50 是在 IoU (Intersection over Union, 交并比) 为 0.5 时，计算每个类别的平均精度值（AP），并取均值。这个值衡量了模型在检测到目标位置时的准确性。整体 mAP50 为 0.613，其中 <code>Vest</code> 为 0.902，<code>helmet</code> 为 0.826，<code>noHelmet</code> 为 0.172，<code>noVest</code> 为 0.554。</p>
+</li>
+<li>
+<p><strong>mAP50-95 (mean Average Precision at IoU 0.5 to 0.95)</strong>: mAP50-95 是更严格的评价标准，它计算在 IoU 范围从 0.5 到 0.95（步长为 0.05）下的平均精度。这个指标综合考虑了模型对目标检测的精度和位置的准确性。整体 mAP50-95 为 0.308，其中 <code>Vest</code> 为 0.487，<code>helmet</code> 为 0.379，<code>noHelmet</code> 为 0.0899，<code>noVest</code> 为 0.274。</p>
+</li>
+</ol>
+<h3 id="解析与分析">解析与分析：</h3>
+<ul>
+<li><strong>精确率（P）较高</strong>：模型对大多数类别预测为正时是可靠的，特别是 <code>noHelmet</code>，显示为 1（精确率非常高）。</li>
+<li><strong>召回率（R）偏低</strong>：整体召回率较低，说明模型漏检较多，尤其是 <code>noHelmet</code> 类别，召回率为 0，表示模型几乎未能识别未戴头盔的实例。</li>
+<li><strong>mAP50 高于 mAP50-95</strong>：mAP50 的值通常会高于 mAP50-95，因为在 IoU = 0.5 时，检测框的位置要求不如更高 IoU 时严格。从结果看，<code>Vest</code> 和 <code>helmet</code> 类别的检测较为理想，但对于未戴头盔（<code>noHelmet</code>）的检测效果较差。</li>
+</ul>
+<h3 id="优化建议">优化建议：</h3>
+<ul>
+<li><strong>提升召回率</strong>：可以考虑进一步优化训练数据，或者尝试调整模型参数来改善召回率，尤其是对难以检测的类别（如 <code>noHelmet</code> 和 <code>noVest</code>）。</li>
+<li><strong>调整阈值</strong>：可能需要调整检测阈值，尤其是针对 <code>noHelmet</code> 类别，以减少漏检。</li>
+</ul>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/wsl-tong-guo-docker-an-zhuang-rknn-toolkit2-huan-jing/" class="post-title gt-a-link">
+                    WSL通过Docker安装RKNN-Toolkit2环境
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+    hljs.initHighlightingOnLoad();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("pre code").forEach((codeBlock) => {
+            const pre = codeBlock.parentElement;
+
+            // 创建外层容器包裹pre，方便定位按钮
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-block-wrapper";
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+
+            // 创建复制按钮
+            const button = document.createElement("button");
+            button.className = "copy-button";
+            button.type = "button";
+            button.innerText = "复制";
+
+            // 插入按钮到wrapper
+            wrapper.insertBefore(button, pre);
+
+            // 复制事件
+            button.addEventListener("click", () => {
+                const text = codeBlock.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    button.innerText = "已复制";
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error("复制失败:", err);
+                    button.innerText = "失败";
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .code-block-wrapper {
+        position: relative;
+    }
+    .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color:rgb(119, 158, 232);
+        border: none;
+        color: white;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+    }
+    .copy-button:disabled {
+        background-color:rgb(149, 170, 191);
+        cursor: default;
+    }
+</style>
+
+    </div>
+</div>
+</body>
+</html>

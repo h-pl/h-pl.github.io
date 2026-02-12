@@ -1,0 +1,507 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>Windows + WSL2 + Ubuntu 22.04 + Docker: 完整安装与配置教程 (自定义路径 ext4 镜像数据盘方案) | 知之</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1770872188359">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a href="/">
+        <div class="navbar-brand">
+            <img class="user-avatar" src="/images/avatar.png" alt="头像">
+            <div class="site-name gt-c-content-color-first">
+                知之
+            </div>
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                            <a href="/" class="menu gt-a-link">
+                                首页
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/archives" class="menu gt-a-link">
+                                归档
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/tags" class="menu gt-a-link">
+                                标签
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/post/about" class="menu gt-a-link">
+                                关于
+                            </a>
+                            
+                </div>
+                
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1770872188359"
+                action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Windows + WSL2 + Ubuntu 22.04 + Docker: 完整安装与配置教程 (自定义路径 ext4 镜像数据盘方案)
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2025-06-01 ·
+                    </time>
+                    
+                        <a href="https://h-pl.github.io/tag/gong-lue/" class="post-tags">
+                            # 攻略
+                        </a>
+                    
+                        <a href="https://h-pl.github.io/tag/wsl/" class="post-tags">
+                            # WSL
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <p><strong>目标:</strong> 在 WSL2 (Ubuntu 22.04) 中搭建一个稳定高效的 Docker 环境，其数据目录通过一个存储在 Windows D盘 <code>VHDX</code> 目录下的 <code>docker-ext4.img</code> 文件（格式化为 ext4）来提供，并挂载到 WSL 的 <code>/mnt/d/docker-data</code> 目录，优先使用 <code>overlay2</code> 存储驱动。</p>
+<hr>
+<p><strong>1. 准备工作 (Windows)</strong></p>
+<ul>
+<li><strong>确保 WSL2 已安装并为默认版本：</strong><br>
+打开 PowerShell (管理员权限)，运行：<pre><code class="language-powershell">wsl --set-default-version 2
+</code></pre>
+</li>
+<li><strong>确保 Windows 功能 &quot;虚拟机平台&quot; 已启用：</strong><br>
+可以在 &quot;控制面板&quot; -&gt; &quot;程序&quot; -&gt; &quot;启用或关闭 Windows 功能&quot; 中检查并勾选 &quot;虚拟机平台&quot; 和 &quot;适用于 Linux 的 Windows 子系统&quot;。</li>
+</ul>
+<hr>
+<p><strong>2. 安装/初始化 Ubuntu 22.04 on WSL2</strong></p>
+<ul>
+<li><strong>如果尚未安装 Ubuntu 22.04：</strong><br>
+在 PowerShell (管理员权限) 中运行：<pre><code class="language-powershell">wsl --install -d Ubuntu-22.04
+</code></pre>
+安装完成后，系统可能会提示重启。</li>
+<li><strong>首次启动 Ubuntu：</strong><br>
+重启后，从 Windows 开始菜单搜索并启动 &quot;Ubuntu&quot;。首次启动会进行初始化，并提示你创建 Linux 用户名和密码。</li>
+</ul>
+<hr>
+<p><strong>3. 启用 Systemd (强烈推荐)</strong></p>
+<p>启用 Systemd 可以使用标准的 Linux 服务管理和 <code>/etc/fstab</code> 自动挂载功能。</p>
+<ul>
+<li><strong>编辑或创建 <code>/etc/wsl.conf</code> 文件：</strong><br>
+在你的 Ubuntu (WSL) 终端中：<pre><code class="language-bash">sudo nano /etc/wsl.conf
+</code></pre>
+确保文件包含以下内容：<pre><code class="language-ini">[boot]
+systemd=true
+</code></pre>
+</li>
+<li><strong>关闭并重启 WSL 实例 (关键步骤)：</strong><br>
+保存 <code>/etc/wsl.conf</code> 文件后，<strong>必须完全关闭所有 WSL 实例</strong>。回到 Windows PowerShell (管理员权限)，运行：<pre><code class="language-powershell">wsl --shutdown
+</code></pre>
+等待几秒钟，然后重新从开始菜单启动你的 Ubuntu 发行版。</li>
+<li><strong>验证 Systemd 是否运行：</strong><br>
+重新进入 Ubuntu 后，执行：<pre><code class="language-bash">ps --no-headers -o comm 1
+# 或者
+systemctl is-system-running --wait
+</code></pre>
+如果第一个命令输出 <code>systemd</code> 或者第二个命令最终输出 <code>running</code> 或 <code>degraded</code> (degraded 也可以工作)，则表示成功。</li>
+</ul>
+<hr>
+<p><strong>4. 更新 Ubuntu 软件包</strong></p>
+<pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt full-upgrade -y
+sudo apt autoremove -y &amp;&amp; sudo apt clean
+</code></pre>
+<hr>
+<p><strong>5. 安装 Docker 引擎</strong></p>
+<ul>
+<li><strong>卸载旧版本 (如果存在)：</strong><pre><code class="language-bash">for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+sudo apt-get autoremove -y
+</code></pre>
+</li>
+<li><strong>设置 Docker 的 APT 仓库：</strong><pre><code class="language-bash">sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo \
+  &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release &amp;&amp; echo &quot;$VERSION_CODENAME&quot;) stable&quot; | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+sudo apt-get update
+</code></pre>
+</li>
+<li><strong>安装 Docker 引擎、CLI、Containerd 和 Compose 插件：</strong><pre><code class="language-bash">sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+</code></pre>
+</li>
+</ul>
+<hr>
+<p><strong>6. 配置 Docker 用户组 (免 <code>sudo</code> 使用 Docker)</strong></p>
+<ul>
+<li>将当前用户添加到 <code>docker</code> 组：<pre><code class="language-bash">sudo usermod -aG docker $USER
+</code></pre>
+</li>
+<li><strong>应用更改：</strong> 退出当前的 WSL 终端会话并重新打开一个新的，或者在当前会话中执行 <code>newgrp docker</code>。推荐重新打开终端。</li>
+</ul>
+<hr>
+<p><strong>7. 创建并挂载 ext4 镜像文件 (Docker 数据盘)</strong></p>
+<ul>
+<li>
+<p><strong>7.1. 定义路径和大小 (这些是你指定的路径)：</strong></p>
+<ul>
+<li>镜像文件完整路径：<code>/mnt/d/VHDX/docker-ext4.img</code></li>
+<li>镜像大小 (示例)：<code>60G</code> (你可以根据需要调整，例如 <code>40G</code>, <code>100G</code>)</li>
+<li>WSL 中的挂载点：<code>/mnt/d/docker-data</code></li>
+</ul>
+</li>
+<li>
+<p><strong>7.2. 在 D 盘上创建存储 <code>.img</code> 文件的目录 (通过 WSL)：</strong></p>
+<pre><code class="language-bash">sudo mkdir -p /mnt/d/VHDX
+</code></pre>
+</li>
+<li>
+<p><strong>7.3. 创建指定大小的稀疏镜像文件：</strong></p>
+<pre><code class="language-bash">sudo truncate -s 60G /mnt/d/VHDX/docker-ext4.img # 将 60G 替换为你需要的大小
+</code></pre>
+</li>
+<li>
+<p><strong>7.4. 将镜像文件格式化为 ext4：</strong></p>
+<pre><code class="language-bash">sudo mkfs.ext4 -F /mnt/d/VHDX/docker-ext4.img
+</code></pre>
+</li>
+<li>
+<p><strong>7.5. 在 WSL 中创建挂载点 (这就是你指定的 <code>/mnt/d/docker-data</code>)：</strong><br>
+这个目录路径 <code>/mnt/d/docker-data</code> 比较特殊，因为它本身位于 WSL 对 Windows D 盘的挂载点 <code>/mnt/d/</code> 之下。通常我们会把 Linux 文件系统挂载到一个 WSL 内部更“纯粹”的路径（如 <code>/srv/docker-storage</code>）。但如果你坚持要用 <code>/mnt/d/docker-data</code> 作为 ext4 镜像的挂载点，技术上是可以的，只是路径看起来有点像仍在直接使用 D 盘，但实际上它会是 loop 设备挂载的 ext4。<br>
+<strong>为避免混淆和潜在问题，强烈建议将 ext4 镜像挂载到 WSL 内部的一个独立目录，例如 <code>/srv/docker_ext4_data</code> 或 <code>/opt/docker_data</code>。</strong><br>
+但如果<strong>你坚持要用 <code>/mnt/d/docker-data</code> 作为挂载点</strong>，请确保这个目录在挂载前是空的，并且没有被其他重要用途占用。以下命令会创建它：</p>
+<pre><code class="language-bash">sudo mkdir -p /mnt/d/docker-data
+</code></pre>
+<p><strong>(推荐的备选挂载点：<code>sudo mkdir -p /srv/docker_ext4_data</code>，后续命令中的 <code>/mnt/d/docker-data</code> 也要相应修改)</strong></p>
+</li>
+<li>
+<p><strong>7.6. 配置自动挂载镜像文件 (回答“每次都要mount吗？”)：</strong><br>
+<strong>是的，如果不进行自动化配置，每次 WSL 完全重启后，你都需要手动重新挂载。</strong> 以下是如何实现自动挂载：</p>
+<ul>
+<li>
+<p><strong>方案 A: 如果 Systemd 已成功启用 (强烈推荐，实现开机自动挂载)：</strong><br>
+编辑 <code>/etc/fstab</code> 文件：</p>
+<pre><code class="language-bash">sudo nano /etc/fstab
+</code></pre>
+<p>在文件末尾添加新的一行：</p>
+<pre><code class="language-fstab">/mnt/d/VHDX/docker-ext4.img   /mnt/d/docker-data   ext4   loop,defaults,nofail,x-systemd.requires=/mnt/d   0 0
+</code></pre>
+<p><strong>解释 <code>nofail</code> 和 <code>x-systemd.requires=/mnt/d</code>：</strong></p>
+<ul>
+<li><code>nofail</code>: 即使 <code>.img</code> 文件无法挂载，WSL 系统也会正常启动。</li>
+<li><code>x-systemd.requires=/mnt/d</code>: 确保在尝试挂载此 loop 设备前，<code>/mnt/d</code> (Windows D盘) 自身已经被 WSL 挂载。<br>
+保存文件。然后测试挂载（如果之前未挂载）：</li>
+</ul>
+<pre><code class="language-bash">sudo mount -a
+df -h /mnt/d/docker-data # 检查是否挂载成功并显示大小
+</code></pre>
+<p>通过 <code>fstab</code> 配置后，WSL (在 systemd 模式下) 启动时会自动尝试挂载。</p>
+</li>
+<li>
+<p><strong>方案 B: 如果 Systemd 未启用或无法工作 (备选方案，每次开终端时尝试挂载)：</strong><br>
+编辑你的 <code>~/.bashrc</code> (或 <code>~/.zshrc</code> 等)：</p>
+<pre><code class="language-bash">sudo nano ~/.bashrc
+</code></pre>
+<p>在文件末尾添加：</p>
+<pre><code class="language-bash"># Auto-mount Docker image if not already mounted
+if ! mountpoint -q /mnt/d/docker-data; then
+  echo &quot;Attempting to mount Docker image for WSL session (/mnt/d/docker-data)...&quot;
+  sudo mount -o loop /mnt/d/VHDX/docker-ext4.img /mnt/d/docker-data &gt; /dev/null 2&gt;&amp;1
+  if mountpoint -q /mnt/d/docker-data; then
+    echo &quot;Docker image mounted at /mnt/d/docker-data.&quot;
+  else
+    echo &quot;Failed to mount Docker image. Sudo password might be required or path is incorrect.&quot;
+  fi
+fi
+</code></pre>
+<p>这种方法会在每次打开新的终端时尝试挂载。<code>sudo</code> 可能会请求密码。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>7.7. 执行首次挂载 (如果使用 fstab，<code>sudo mount -a</code> 已完成或重启WSL后生效；如果使用 <code>.bashrc</code>，打开新终端即可)</strong></p>
+</li>
+</ul>
+<hr>
+<p><strong>8. 配置 Docker 守护进程 (<code>daemon.json</code>)</strong></p>
+<ul>
+<li><strong>创建 Docker 配置目录 (如果不存在)：</strong><pre><code class="language-bash">sudo mkdir -p /etc/docker
+</code></pre>
+</li>
+<li><strong>创建或编辑 <code>/etc/docker/daemon.json</code> 文件：</strong><pre><code class="language-bash">sudo nano /etc/docker/daemon.json
+</code></pre>
+粘贴以下内容。Docker 的 <code>data-root</code> 应该是挂载点 <code>/mnt/d/docker-data</code> 内部的一个<strong>子目录</strong>，例如 <code>/mnt/d/docker-data/docker</code>：<pre><code class="language-json">{
+  &quot;data-root&quot;: &quot;/mnt/d/docker-data/docker&quot;,
+  &quot;storage-driver&quot;: &quot;overlay2&quot;,
+  &quot;log-driver&quot;: &quot;json-file&quot;,
+  &quot;log-opts&quot;: {
+    &quot;max-size&quot;: &quot;20m&quot;,
+    &quot;max-file&quot;: &quot;5&quot;
+  },
+  &quot;registry-mirrors&quot;: [
+    // 你在日本，可以查找是否有日本地区的Docker镜像加速器，或者留空 [] 使用Docker Hub官方源
+  ]
+}
+</code></pre>
+</li>
+<li><strong>在挂载的 ext4 文件系统中创建实际的 Docker 数据目录：</strong><pre><code class="language-bash">sudo mkdir -p /mnt/d/docker-data/docker
+</code></pre>
+</li>
+</ul>
+<hr>
+<p><strong>9. 启动并管理 Docker 服务</strong></p>
+<ul>
+<li><strong>方案 A: 如果 Systemd 已成功启用 (推荐)：</strong><pre><code class="language-bash">sudo systemctl daemon-reload  # 如果修改了 daemon.json
+sudo systemctl restart docker.service
+sudo systemctl enable docker.service # 设置 Docker 开机自启 (WSL启动时)
+sudo systemctl status docker.service # 查看状态
+</code></pre>
+</li>
+<li><strong>方案 B: 如果 Systemd 未启用或无法工作：</strong><br>
+手动启动 Docker 守护进程：<pre><code class="language-bash">sudo dockerd &gt; /tmp/dockerd.log 2&gt;&amp;1 &amp;
+</code></pre>
+你需要确保在每次 WSL 启动后，并且 loop 镜像已挂载后，再执行此命令。</li>
+</ul>
+<hr>
+<p><strong>10. 验证 Docker 安装</strong></p>
+<ul>
+<li>（在新终端，或执行 <code>newgrp docker</code> 后）运行：<pre><code class="language-bash">docker info
+</code></pre>
+检查 <code>Server Version</code>, <code>Storage Driver</code> (应为 <code>overlay2</code>), <code>Docker Root Dir</code> (应为 <code>/mnt/d/docker-data/docker</code>)。</li>
+<li>运行 <code>hello-world</code> 测试：<pre><code class="language-bash">docker run hello-world
+</code></pre>
+</li>
+</ul>
+<hr>
+<p><strong>11. 运行 Nginx 测试 (本地开发示例)</strong></p>
+<ol>
+<li><strong>在 D 盘创建你的网站项目目录 (通过 WSL)：</strong><pre><code class="language-bash">mkdir -p /mnt/d/MyLocalSite
+echo &quot;&lt;h1&gt;Nginx on Docker (ext4 loop on D:) Works!&lt;/h1&gt;&quot; &gt; /mnt/d/MyLocalSite/index.html
+</code></pre>
+</li>
+<li><strong>运行 Nginx 容器：</strong><pre><code class="language-bash">docker run --name my-nginx-from-d -d -p 8080:80 -v /mnt/d/MyLocalSite:/usr/share/nginx/html nginx
+</code></pre>
+</li>
+<li><strong>在 Windows 浏览器中访问：</strong> <code>http://localhost:8080</code></li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<p>通过 <code>/etc/fstab</code> (配合 systemd) 或 <code>~/.bashrc</code> 脚本，你可以实现 Docker 使用的 ext4 回环镜像的自动挂载，从而<strong>避免每次启动 WSL 后手动 <code>mount</code></strong>。强烈推荐启用 systemd 并使用 <code>/etc/fstab</code> 的方法，因为它更健壮和符合 Linux 标准。</p>
+<p>请仔细检查所有路径，特别是你指定的 <code>/mnt/d/VHDX/docker-ext4.img</code> 和挂载点 <code>/mnt/d/docker-data</code>，以及 Docker <code>data-root</code> 的子目录 <code>/mnt/d/docker-data/docker</code>。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/nodejs-xue-xi-bi-ji/" class="post-title gt-a-link">
+                    nodejs学习笔记
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+    hljs.initHighlightingOnLoad();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("pre code").forEach((codeBlock) => {
+            const pre = codeBlock.parentElement;
+
+            // 创建外层容器包裹pre，方便定位按钮
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-block-wrapper";
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+
+            // 创建复制按钮
+            const button = document.createElement("button");
+            button.className = "copy-button";
+            button.type = "button";
+            button.innerText = "复制";
+
+            // 插入按钮到wrapper
+            wrapper.insertBefore(button, pre);
+
+            // 复制事件
+            button.addEventListener("click", () => {
+                const text = codeBlock.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    button.innerText = "已复制";
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error("复制失败:", err);
+                    button.innerText = "失败";
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .code-block-wrapper {
+        position: relative;
+    }
+    .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color:rgb(119, 158, 232);
+        border: none;
+        color: white;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+    }
+    .copy-button:disabled {
+        background-color:rgb(149, 170, 191);
+        cursor: default;
+    }
+</style>
+
+    </div>
+</div>
+</body>
+</html>

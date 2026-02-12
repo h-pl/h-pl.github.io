@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://h-pl.github.io</id>
+    <title>知之</title>
+    <updated>2026-02-12T04:56:32.085Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://h-pl.github.io"/>
+    <link rel="self" href="https://h-pl.github.io/atom.xml"/>
+    <logo>https://h-pl.github.io/images/avatar.png</logo>
+    <icon>https://h-pl.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2026, 知之</rights>
+    <entry>
+        <title type="html"><![CDATA[Vijeo Citect 7.2 遗留系统数据解耦与采集方案]]></title>
+        <id>https://h-pl.github.io/post/vijeo-citect-72-yi-liu-xi-tong-shu-ju-jie-ou-yu-cai-ji-fang-an/</id>
+        <link href="https://h-pl.github.io/post/vijeo-citect-72-yi-liu-xi-tong-shu-ju-jie-ou-yu-cai-ji-fang-an/">
+        </link>
+        <updated>2026-01-05T10:20:04.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[私有化语音模型（CPU 版）交付测试报告模板]]></title>
+        <id>https://h-pl.github.io/post/si-you-hua-yu-yin-mo-xing-cpu-ban-jiao-fu-ce-shi-bao-gao-mo-ban/</id>
+        <link href="https://h-pl.github.io/post/si-you-hua-yu-yin-mo-xing-cpu-ban-jiao-fu-ce-shi-bao-gao-mo-ban/">
+        </link>
+        <updated>2025-12-02T06:18:49.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[大模型给我关于唯物和唯心主义的启发]]></title>
+        <id>https://h-pl.github.io/post/da-mo-xing-gei-wo-guan-yu-wei-wu-he-wei-xin-zhu-yi-de-qi-fa/</id>
+        <link href="https://h-pl.github.io/post/da-mo-xing-gei-wo-guan-yu-wei-wu-he-wei-xin-zhu-yi-de-qi-fa/">
+        </link>
+        <updated>2025-11-25T08:30:44.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ibkr入金策略]]></title>
+        <id>https://h-pl.github.io/post/ibkr-ru-jin-ce-lue/</id>
+        <link href="https://h-pl.github.io/post/ibkr-ru-jin-ce-lue/">
+        </link>
+        <updated>2025-10-11T05:37:53.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[日语语法有哪些？]]></title>
+        <id>https://h-pl.github.io/post/ri-yu-yu-fa-you-na-xie/</id>
+        <link href="https://h-pl.github.io/post/ri-yu-yu-fa-you-na-xie/">
+        </link>
+        <updated>2025-09-11T10:20:01.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[历史是后来人的历史]]></title>
+        <id>https://h-pl.github.io/post/li-shi-shi-hou-lai-ren-de-li-shi/</id>
+        <link href="https://h-pl.github.io/post/li-shi-shi-hou-lai-ren-de-li-shi/">
+        </link>
+        <updated>2025-08-27T01:30:08.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[有那么一刻我开始同情施暴者]]></title>
+        <id>https://h-pl.github.io/post/you-na-me-yi-ke-wo-kai-shi-tong-qing-shi-bao-zhe/</id>
+        <link href="https://h-pl.github.io/post/you-na-me-yi-ke-wo-kai-shi-tong-qing-shi-bao-zhe/">
+        </link>
+        <updated>2025-06-11T01:21:47.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Windows + WSL2 + Ubuntu 22.04 + Docker: 完整安装与配置教程 (自定义路径 ext4 镜像数据盘方案)]]></title>
+        <id>https://h-pl.github.io/post/windows-wsl2-ubuntu-2204-docker-wan-zheng-an-zhuang-yu-pei-zhi-jiao-cheng-zi-ding-yi-lu-jing-ext4-jing-xiang-shu-ju-pan-fang-an/</id>
+        <link href="https://h-pl.github.io/post/windows-wsl2-ubuntu-2204-docker-wan-zheng-an-zhuang-yu-pei-zhi-jiao-cheng-zi-ding-yi-lu-jing-ext4-jing-xiang-shu-ju-pan-fang-an/">
+        </link>
+        <updated>2025-05-31T16:32:21.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[nodejs学习笔记]]></title>
+        <id>https://h-pl.github.io/post/nodejs-xue-xi-bi-ji/</id>
+        <link href="https://h-pl.github.io/post/nodejs-xue-xi-bi-ji/">
+        </link>
+        <updated>2025-04-28T07:05:08.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Docker学习笔记]]></title>
+        <id>https://h-pl.github.io/post/docker-xue-xi-bi-ji/</id>
+        <link href="https://h-pl.github.io/post/docker-xue-xi-bi-ji/">
+        </link>
+        <updated>2025-04-21T06:36:33.000Z</updated>
+    </entry>
+</feed>

@@ -1,0 +1,808 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>私有化语音模型（CPU 版）交付测试报告模板 | 知之</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1770872188359">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a href="/">
+        <div class="navbar-brand">
+            <img class="user-avatar" src="/images/avatar.png" alt="头像">
+            <div class="site-name gt-c-content-color-first">
+                知之
+            </div>
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                            <a href="/" class="menu gt-a-link">
+                                首页
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/archives" class="menu gt-a-link">
+                                归档
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/tags" class="menu gt-a-link">
+                                标签
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/post/about" class="menu gt-a-link">
+                                关于
+                            </a>
+                            
+                </div>
+                
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1770872188359"
+                action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    私有化语音模型（CPU 版）交付测试报告模板
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2025-12-02 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p><strong>项目名称：</strong> _______________________<br>
+<strong>模型版本：</strong> ASR：v____ / TTS：v____<br>
+<strong>测试时间：</strong> ________________________<br>
+<strong>测试执行：</strong> ________________________<br>
+<strong>验收结论：</strong> □ 通过 □ 有条件通过 □ 驳回</p>
+<hr>
+<h1 id="0-测试摘要executive-summary"><strong>0. 测试摘要（Executive Summary）</strong></h1>
+<table>
+<thead>
+<tr>
+<th>测试类别</th>
+<th>结果</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>性能指标</td>
+<td>□ 通过 □ 警戒 □ 不通过</td>
+<td>最大稳定并发：____ 路</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>□ 通过 □ 警戒 □ 不通过</td>
+<td>72h 稳定运行，无降频/泄漏</td>
+</tr>
+<tr>
+<td>精度指标</td>
+<td>□ 通过 □ 轻微损失 □ 不通过</td>
+<td>与 GPU 基准对比差异：____</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>□ 通过 □ 风险 □ 不通过</td>
+<td>指令集要求：AVX2 / AVX512</td>
+</tr>
+<tr>
+<td>风险评估</td>
+<td>□ 可上线 □ 谨慎上线</td>
+<td>CPU 资源瓶颈：是/否</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="1-部署架构说明architecture-overview"><strong>1. 部署架构说明（Architecture Overview）</strong></h1>
+<blockquote>
+<p><em>说明 CPU 环境下 ASR/TTS 服务的部署方式：单机多实例 / 多机集群 / 是否使用网关（Nginx、Envoy）等。</em></p>
+</blockquote>
+<p>（架构图占位）</p>
+<hr>
+<h1 id="2-硬件与运行环境environment-baseline"><strong>2. 硬件与运行环境（Environment Baseline）</strong></h1>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>配置详情</th>
+<th>关键检查项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU 型号</strong></td>
+<td>__________________</td>
+<td>x86_64 / ARM64</td>
+</tr>
+<tr>
+<td><strong>物理核 / 逻辑核 (HT)</strong></td>
+<td>____ / ____</td>
+<td>是否开启超线程</td>
+</tr>
+<tr>
+<td><strong>指令集支持</strong></td>
+<td>AVX2 / AVX512 / VNNI</td>
+<td>是否实际启用（影响 5–10× 性能）</td>
+</tr>
+<tr>
+<td><strong>内存</strong></td>
+<td>____ GB</td>
+<td>是否存在带宽瓶颈</td>
+</tr>
+<tr>
+<td><strong>操作系统</strong></td>
+<td>__________________</td>
+<td>内核版本：________</td>
+</tr>
+<tr>
+<td><strong>部署方式</strong></td>
+<td>Docker / 裸机</td>
+<td>是否启用 CPU 绑核</td>
+</tr>
+<tr>
+<td><strong>CPU 主频</strong></td>
+<td>基准：____ GHz</td>
+<td>压测是否降频</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="3-模型加载性能model-loading"><strong>3. 模型加载性能（Model Loading）</strong></h1>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>测试结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>模型大小</td>
+<td>______ GB</td>
+</tr>
+<tr>
+<td>首次加载耗时</td>
+<td>______ 秒</td>
+</tr>
+<tr>
+<td>是否常驻内存</td>
+<td>□ 是 □ 否</td>
+</tr>
+<tr>
+<td>重启不可用窗口</td>
+<td>______ 秒</td>
+</tr>
+<tr>
+<td>多实例加载情况</td>
+<td>是否占满内存 / 是否复用权重</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="4-性能测试performance-benchmark"><strong>4. 性能测试（Performance Benchmark）</strong></h1>
+<h2 id="41-单路基准性能single-stream-baseline"><strong>4.1 单路基准性能（Single Stream Baseline）</strong></h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>ASR</th>
+<th>TTS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单路 CPU 占用</td>
+<td>____ %（单核）</td>
+<td>____ %</td>
+</tr>
+<tr>
+<td>单路内存占用</td>
+<td>____ MB</td>
+<td>____ MB</td>
+</tr>
+<tr>
+<td><strong>RTF（实时率）</strong></td>
+<td>____（≤0.1 视为实时）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合成倍速</strong></td>
+<td>—</td>
+<td>____ 倍（≥10 倍）</td>
+</tr>
+<tr>
+<td>首包延迟</td>
+<td>____ ms</td>
+<td>____ ms</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="42-并发阶梯压力测试concurrency-ladder-test"><strong>4.2 并发阶梯压力测试（Concurrency Ladder Test）</strong></h2>
+<table>
+<thead>
+<tr>
+<th>并发路数</th>
+<th>CPU 总占用</th>
+<th>CPU 主频</th>
+<th>ASR RTF</th>
+<th>ASR P99</th>
+<th>TTS P99 首包</th>
+<th>吞吐量</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>性能拐点（RTF/P99 开始恶化）出现于：</strong> ____ 路<br>
+<strong>最大安全并发（CPU ≤ 80%）：</strong> ____ 路<br>
+<strong>单物理核最大承载能力：</strong> ____ 路/核</p>
+<hr>
+<h2 id="43-混合负载测试noisy-neighbor"><strong>4.3 混合负载测试（Noisy Neighbor）</strong></h2>
+<blockquote>
+<p><em>验证在存在严重 CPU 抢占时（如 Java/Python 业务进程）ASR/TTS 的服务质量。<br>
+已整合工程细节，但用甲方验收结构呈现。</em></p>
+</blockquote>
+<h3 id="测试背景自动填写"><strong>测试背景（自动填写）</strong></h3>
+<ul>
+<li>
+<p>基线负载：模拟语音服务稳定并发 ____ 路（约占 CPU 50%）</p>
+</li>
+<li>
+<p>干扰负载工具：<code>stress-ng</code> / <code>sysbench</code></p>
+</li>
+<li>
+<p>注入干扰目标：将 CPU 推高至 <strong>95% ± 3%</strong></p>
+</li>
+</ul>
+<hr>
+<h3 id="测试结果填写表"><strong>测试结果（填写表）</strong></h3>
+<table>
+<thead>
+<tr>
+<th>测试项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>基线状态（无干扰）</strong></td>
+<td>RTF = ____，P99 = ____ ms</td>
+</tr>
+<tr>
+<td><strong>干扰启动后 CPU 总占用</strong></td>
+<td>____ %（目标 95%）</td>
+</tr>
+<tr>
+<td><strong>RTF 波动情况</strong></td>
+<td>从 <strong>____ → ____</strong>（变化倍数：×____）</td>
+</tr>
+<tr>
+<td><strong>P99 延迟抖动</strong></td>
+<td>从 <strong>____ ms → ____ ms</strong></td>
+</tr>
+<tr>
+<td><strong>语音服务表现</strong></td>
+<td>□ 正常 □ 有卡顿 □ 丢请求 □ 频繁超时</td>
+</tr>
+<tr>
+<td><strong>CPU 降频情况</strong></td>
+<td>□ 无 □ 有，从 ____GHz → ____GHz</td>
+</tr>
+<tr>
+<td><strong>上下文切换（cswch/s）</strong></td>
+<td>____（显著/轻微/无变化）</td>
+</tr>
+<tr>
+<td><strong>是否需要 CPU 隔离（cpuset/cgroup）</strong></td>
+<td>□ 必须 □ 建议启用 □ 可不启用</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="标准结论模板自动附带"><strong>标准结论模板（自动附带）</strong></h3>
+<blockquote>
+<p>在 CPU 被大量抢占的情况下，ASR/TTS 服务的性能（RTF、P99）出现：</p>
+<ul>
+<li>
+<p>□ 轻微波动（可接受）</p>
+</li>
+<li>
+<p>□ 中度恶化（建议绑核）</p>
+</li>
+<li>
+<p>□ 严重恶化（必须绑核，否则无法满足 SLA）</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h1 id="5-稳定性与健壮性stability-robustness"><strong>5. 稳定性与健壮性（Stability &amp; Robustness）</strong></h1>
+<h2 id="51-72-小时长稳测试"><strong>5.1 72 小时长稳测试</strong></h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU 是否降频</td>
+<td>□ 无 □ 有（____ → ____ GHz）</td>
+</tr>
+<tr>
+<td>内存是否泄漏</td>
+<td>□ 正常 □ 泄漏（增长 ____ %）</td>
+</tr>
+<tr>
+<td>FD/句柄增长</td>
+<td>正常 / 异常</td>
+</tr>
+<tr>
+<td>Crash / 重启</td>
+<td>无 / ____ 次</td>
+</tr>
+<tr>
+<td>服务探活</td>
+<td>全通过 / 异常</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="52-异常输入处理"><strong>5.2 异常输入处理</strong></h2>
+<table>
+<thead>
+<tr>
+<th>测试项</th>
+<th>期望</th>
+<th>实测结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>超长音频（&gt;1h）</td>
+<td>拒绝/分段</td>
+<td></td>
+</tr>
+<tr>
+<td>超长文本（&gt;1w 字）</td>
+<td>限制/报错</td>
+<td></td>
+</tr>
+<tr>
+<td>纯噪声/损坏音频</td>
+<td>快速报错</td>
+<td></td>
+</tr>
+<tr>
+<td>突发流量（100 req/s）</td>
+<td>队列/丢弃</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="53-故障注入failover"><strong>5.3 故障注入（Failover）</strong></h2>
+<table>
+<thead>
+<tr>
+<th>注入故障</th>
+<th>预期行为</th>
+<th>实测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>杀掉主进程</td>
+<td>自动拉起</td>
+<td></td>
+</tr>
+<tr>
+<td>网络闪断</td>
+<td>超时重试</td>
+<td></td>
+</tr>
+<tr>
+<td>磁盘写满</td>
+<td>服务可用+告警</td>
+<td></td>
+</tr>
+<tr>
+<td>CPU 100% 占用</td>
+<td>不整体卡死</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="6-精度accuracy"><strong>6. 精度（Accuracy）</strong></h1>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>CPU 模式</th>
+<th>GPU 基线</th>
+<th>差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ASR WER</td>
+<td>____%</td>
+<td>____%</td>
+<td>±____</td>
+</tr>
+<tr>
+<td>TTS MOS</td>
+<td>____</td>
+<td>____</td>
+<td>±____</td>
+</tr>
+<tr>
+<td>量化模式</td>
+<td>FP32 / FP16 / Int8</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>CPU 特有问题</td>
+<td>□ 无 □ 底噪 □ 金属音 □ 断字</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="7-风险评估与上线建议"><strong>7. 风险评估与上线建议</strong></h1>
+<h2 id="71-关键风险项"><strong>7.1 关键风险项</strong></h2>
+<ol>
+<li>
+<p>CPU 性能瓶颈：并发 &gt; ____ 路出现明显恶化</p>
+</li>
+<li>
+<p>指令集缺失风险：无 AVX2/512 性能下降 ____ %</p>
+</li>
+<li>
+<p>与业务混跑风险：CPU 抢占导致 RTF × ____ 倍恶化</p>
+</li>
+<li>
+<p>模型加载窗口期：加载耗时 ____ 秒</p>
+</li>
+</ol>
+<hr>
+<h2 id="72-上线配置建议best-practices"><strong>7.2 上线配置建议（Best Practices）</strong></h2>
+<ul>
+<li>
+<p><strong>Docker 绑核示例：</strong><br>
+<code>--cpuset-cpus=&quot;0-10&quot; --cpu-quota=100000</code></p>
+</li>
+<li>
+<p><strong>限流策略：</strong> CPU&gt;90% 时拒绝新请求</p>
+</li>
+<li>
+<p><strong>部署模式：</strong></p>
+<ul>
+<li>
+<p>ASR/TTS 分离</p>
+</li>
+<li>
+<p>多实例 + LB</p>
+</li>
+<li>
+<p>模型常驻内存</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="8-最终验收结论final-acceptance"><strong>8. 最终验收结论（Final Acceptance）</strong></h1>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>结果</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>功能</td>
+<td>□ 通过 □ 有条件通过 □ 拒收</td>
+<td></td>
+</tr>
+<tr>
+<td>性能</td>
+<td>□ 通过 □ 有条件通过 □ 拒收</td>
+<td></td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>□ 通过 □ 有条件通过 □ 拒收</td>
+<td></td>
+</tr>
+<tr>
+<td>精度</td>
+<td>□ 通过 □ 有条件通过 □ 拒收</td>
+<td></td>
+</tr>
+<tr>
+<td>综合评估</td>
+<td>□ 推荐上线 □ 限制上线 □ 不建议上线</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>最终意见：</strong></p>
+<hr>
+<hr>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/da-mo-xing-gei-wo-guan-yu-wei-wu-he-wei-xin-zhu-yi-de-qi-fa/" class="post-title gt-a-link">
+                    大模型给我关于唯物和唯心主义的启发
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+    hljs.initHighlightingOnLoad();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("pre code").forEach((codeBlock) => {
+            const pre = codeBlock.parentElement;
+
+            // 创建外层容器包裹pre，方便定位按钮
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-block-wrapper";
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+
+            // 创建复制按钮
+            const button = document.createElement("button");
+            button.className = "copy-button";
+            button.type = "button";
+            button.innerText = "复制";
+
+            // 插入按钮到wrapper
+            wrapper.insertBefore(button, pre);
+
+            // 复制事件
+            button.addEventListener("click", () => {
+                const text = codeBlock.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    button.innerText = "已复制";
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error("复制失败:", err);
+                    button.innerText = "失败";
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .code-block-wrapper {
+        position: relative;
+    }
+    .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color:rgb(119, 158, 232);
+        border: none;
+        color: white;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+    }
+    .copy-button:disabled {
+        background-color:rgb(149, 170, 191);
+        cursor: default;
+    }
+</style>
+
+    </div>
+</div>
+</body>
+</html>

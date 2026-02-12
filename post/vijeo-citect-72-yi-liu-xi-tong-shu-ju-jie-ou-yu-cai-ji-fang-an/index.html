@@ -1,0 +1,490 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>Vijeo Citect 7.2 遗留系统数据解耦与采集方案 | 知之</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1770872188359">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a href="/">
+        <div class="navbar-brand">
+            <img class="user-avatar" src="/images/avatar.png" alt="头像">
+            <div class="site-name gt-c-content-color-first">
+                知之
+            </div>
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                            <a href="/" class="menu gt-a-link">
+                                首页
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/archives" class="menu gt-a-link">
+                                归档
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/tags" class="menu gt-a-link">
+                                标签
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/post/about" class="menu gt-a-link">
+                                关于
+                            </a>
+                            
+                </div>
+                
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1770872188359"
+                action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Vijeo Citect 7.2 遗留系统数据解耦与采集方案
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2026-01-05 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p>施耐德电气消防系统数据读取技术方案，基于 Cicode 异步文件桥接（File Bridge）的技术实施白皮书</p>
+<p><strong>文档版本</strong>：V2.0 (Final)<br>
+<strong>最后更新</strong>：2026-01-05<br>
+<strong>适用环境</strong>：Schneider Vijeo Citect 7.2 / Windows Server<br>
+<strong>关键词</strong>：Cicode, Data Logging, JSON, NodeJS, Legacy System Integration</p>
+<hr>
+<h2 id="1-项目背景与设计思路-background-concept">1. 项目背景与设计思路 (Background &amp; Concept)</h2>
+<h3 id="11-背景与现状-the-context">1.1 背景与现状 (The Context)</h3>
+<p>现场运行着一套基于 <strong>Vijeo Citect 7.2</strong> 的施耐德隧道消防监测系统。通过 citect explore 可知，系统底层通过 <code>variable.dbf</code> 定义了大量 Tag 变量，并归属于 <strong><code>Cluster1</code></strong> 集群。</p>
+<ul>
+<li><strong>当前痛点</strong>：系统是一个封闭的 SCADA 环境。虽然界面（Panel 1 &amp; Panel 2）能够显示 CO2、CH4 等气体的实时读数，但外部的 <strong>Node.js 上报服务</strong> 无法直接获取这些模拟量（Analog）数据，只能抓取文本报警日志。</li>
+<li><strong>业务需求</strong>：以 <strong>5秒/次</strong> 的频率，获取界面上红框区域的 10 个气体读数及设备在线状态，并上报至云端。</li>
+</ul>
+<h3 id="12-核心设计思路-design-philosophy">1.2 核心设计思路 (Design Philosophy)</h3>
+<p>面对老旧工业软件，采用了 <strong>“非侵入式文件桥接”</strong> 方案。<br>
+我们不尝试破解 Citect 的内存或使用不稳定的 DCOM 接口，而是利用 Citect 自身的脚本引擎，<strong>将“内存数据”周期性地固化为 “磁盘文件”</strong>。</p>
+<p><strong>设计逻辑链</strong>：</p>
+<ol>
+<li><strong>定位</strong>：在 <code>variable.dbf</code> 中找到数据源头，定位面板展示 <code>tag</code> 含义。</li>
+<li><strong>提取</strong>：编写 Cicode 脚本从内存“捞取”数据。</li>
+<li><strong>调度</strong>：利用 Event（事件）机制进行周期性触发。</li>
+<li><strong>执行</strong>：<strong>关键一步</strong>，指定 IO Server 进程负责运行该调度。</li>
+<li><strong>消费</strong>：外部 Node.js 服务只读文件，不碰系统核心。</li>
+</ol>
+<hr>
+<h2 id="2-软件架构解析-software-architecture">2. 软件架构解析 (Software Architecture)</h2>
+<p>本方案在逻辑上分为三层：<strong>数据源层 (Citect)</strong> -&gt; <strong>中转层 (File System)</strong> -&gt; <strong>应用层 (Node.js)</strong>。</p>
+<figure data-type="image" tabindex="1"><img src="https://h-pl.github.io/post-images/1767609165620.png" alt="" loading="lazy"></figure>
+<ul>
+<li><strong>Cluster1 的作用</strong>：它是 Citect 系统的数据命名空间。我们在 <code>variable.dbf</code> 中确认了所有气体变量都属于 <code>Cluster1</code>，因此后续所有的 Event 和 Server 配置都必须挂载在 <code>Cluster1</code> 下，否则找不到变量。</li>
+</ul>
+<hr>
+<h2 id="3-详细实施路线-implementation-roadmap">3. 详细实施路线 (Implementation Roadmap)</h2>
+<h3 id="31-变量映射-tag-mapping">3.1 变量映射 (Tag Mapping)</h3>
+<p>通过解析工程根目录下的 <code>variable.dbf</code>，确定了界面数值对应的底层变量名。<br>
+<img src="https://h-pl.github.io/post-images/1767609634270.png" alt="" loading="lazy"></p>
+<ul>
+<li><strong>数据归属</strong>：Cluster: <code>Cluster1</code> / Type: <code>REAL(浮点型)</code> /  ana: <code>analog(实时读数)</code></li>
+<li><strong>变量清单</strong>：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>监测项</th>
+<th>FCP Panel 1 变量</th>
+<th>FCP Panel 2 变量</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CO2</strong></td>
+<td><code>GAS_1_ch1_ana</code></td>
+<td><code>GAS_2_ch1_ana</code></td>
+<td>模拟量</td>
+</tr>
+<tr>
+<td><strong>CH4</strong></td>
+<td><code>GAS_1_ch2_ana</code></td>
+<td><code>GAS_2_ch2_ana</code></td>
+<td>模拟量</td>
+</tr>
+<tr>
+<td><strong>CO</strong></td>
+<td><code>GAS_1_ch3_ana</code></td>
+<td><code>GAS_2_ch3_ana</code></td>
+<td>模拟量</td>
+</tr>
+<tr>
+<td><strong>H2S</strong></td>
+<td><code>GAS_1_ch4_ana</code></td>
+<td><code>GAS_2_ch4_ana</code></td>
+<td>模拟量</td>
+</tr>
+<tr>
+<td><strong>O2</strong></td>
+<td><code>GAS_1_ch5_ana</code></td>
+<td><code>GAS_2_ch5_ana</code></td>
+<td>模拟量</td>
+</tr>
+<tr>
+<td><strong>状态</strong></td>
+<td><code>IODeviceInfo</code></td>
+<td><code>IODeviceInfo</code></td>
+<td>在线检测</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="32-脚本开发-cicode-development">3.2 脚本开发 (Cicode Development)</h3>
+<p><strong>前置操作</strong>：在 Windows C 盘根目录下手动新建文件夹 <code>C:\CitectData</code>。（Cicode 无法自动创建文件夹，若无此步，后续操作无效）。</p>
+<p><strong>完整代码 (<code>ExportGasToText.ci</code>)</strong>：</p>
+<pre><code class="language-c">/* * 函数名: ExportGasToText
+ * 作用: 读取 Cluster1 中的气体变量，封装为 JSON 写入磁盘
+ * 注意: 需要在 Computer Setup 中赋予 Server 运行权限
+ */
+FUNCTION ExportGasToText()
+    INT hFile;
+    STRING sPath;
+    STRING sStatus1;
+    STRING sStatus2;
+
+    // 1. 指定输出路径 (文件夹必须预先存在)
+    sPath = &quot;C:\CitectData\GasRealtime.json&quot;;
+
+    // 2. 检查设备在线状态 (3 = 状态模式, 返回 &quot;1&quot; 代表在线)
+    IF IODeviceInfo(&quot;GAS_1&quot;, 3) = &quot;1&quot; THEN sStatus1 = &quot;true&quot;; ELSE sStatus1 = &quot;false&quot;; END
+    IF IODeviceInfo(&quot;GAS_2&quot;, 3) = &quot;1&quot; THEN sStatus2 = &quot;true&quot;; ELSE sStatus2 = &quot;false&quot;; END
+
+    // 3. 打开文件 ('w' = 覆盖模式，确保文件不无限增长)
+    hFile = FileOpen(sPath, &quot;w&quot;);
+
+    IF hFile &lt;&gt; -1 THEN
+        // 4. 构建 JSON 字符串
+        FileWrite(hFile, &quot;{&quot;);
+
+        // --- Panel 1 ---
+        FileWrite(hFile, &quot;  ^&quot;FCP1^&quot;: {&quot;);
+        FileWrite(hFile, &quot;    ^&quot;Online^&quot;: &quot; + sStatus1 + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;CO2^&quot;: &quot; + RealToStr(GAS_1_ch1_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;CH4^&quot;: &quot; + RealToStr(GAS_1_ch2_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;CO^&quot;: &quot;  + RealToStr(GAS_1_ch3_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;H2S^&quot;: &quot; + RealToStr(GAS_1_ch4_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;O2^&quot;: &quot;  + RealToStr(GAS_1_ch5_ana, 6, 2)); 
+        FileWrite(hFile, &quot;  },&quot;);
+
+        // --- Panel 2 ---
+        FileWrite(hFile, &quot;  ^&quot;FCP2^&quot;: {&quot;);
+        FileWrite(hFile, &quot;    ^&quot;Online^&quot;: &quot; + sStatus2 + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;CO2^&quot;: &quot; + RealToStr(GAS_2_ch1_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;CH4^&quot;: &quot; + RealToStr(GAS_2_ch2_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;CO^&quot;: &quot;  + RealToStr(GAS_2_ch3_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;H2S^&quot;: &quot; + RealToStr(GAS_2_ch4_ana, 6, 2) + &quot;,&quot;);
+        FileWrite(hFile, &quot;    ^&quot;O2^&quot;: &quot;  + RealToStr(GAS_2_ch5_ana, 6, 2));
+        FileWrite(hFile, &quot;  }&quot;);
+
+        FileWrite(hFile, &quot;}&quot;);
+        FileClose(hFile);
+    ELSE
+        // 错误处理: 无法打开文件
+        TraceMsg(&quot;Error: Cannot write to gas data file. Check Folder Path.&quot;);
+    END
+END
+
+</code></pre>
+<hr>
+<h3 id="33-任务调度配置-events-configuration">3.3 任务调度配置 (Events Configuration)</h3>
+<p>在 Project Editor -&gt; System -&gt; <strong>Events</strong> 中配置定时器。<br>
+<img src="https://h-pl.github.io/post-images/1767609654269.png" alt="" loading="lazy"></p>
+<ul>
+<li><strong>Name</strong>: <code>ExportGasToText</code></li>
+<li><strong>Cluster Name</strong>: <code>Cluster1</code> (此处必须填 <code>Cluster1</code>，因为变量都在此集群下。若留空，脚本找不到变量会报错)。</li>
+<li><strong>Time</strong>: (留空)</li>
+<li><strong>Period</strong>: <code>00:00:05</code> (5秒周期)</li>
+<li><strong>Action</strong>: <code>ExportGasToText()</code></li>
+</ul>
+<p><strong>PS</strong>： 别忘记在  Project Editor  执行File -&gt; Compile 。</p>
+<hr>
+<h3 id="34-进程执行分配-computer-setup-至关重要">3.4 进程执行分配 (Computer Setup) —— <strong>[至关重要]</strong></h3>
+<p><strong>逻辑说明</strong>：<br>
+配置了 Event 只是在数据库里写了一条“规则”，<strong>必须指派具体的 Windows 进程（Server）去执行这条规则，否则 Event 永远不会启动。</strong></p>
+<p>很多 Citect 开发者的脚本不生效，90% 都是死在这一步：默认情况下，新建的 Event <strong>没有人认领</strong>。</p>
+<p><strong>首先，回到 Citect Explore。</strong><br>
+<img src="https://h-pl.github.io/post-images/1770866209508.png" alt="" loading="lazy"></p>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>运行 <strong>Computer Setup Wizard</strong> -&gt; Custom Setup。</li>
+<li>一路 Next 直到 <strong>Events Setup</strong> 页面。</li>
+<li><strong>Client (客户端)</strong>：</li>
+</ol>
+<ul>
+<li>❌ <strong>取消勾选</strong> <code>ExportGasToText</code>。</li>
+<li><em>原因</em>：客户端负责显示画面，不应负责后台写文件，避免多台客户端同时写入导致文件锁死。<br>
+<img src="https://h-pl.github.io/post-images/1767609667387.png" alt="" loading="lazy"></li>
+</ul>
+<ol start="4">
+<li><strong>Cluster1.IOServer (IO服务器)</strong>：</li>
+</ol>
+<ul>
+<li>✅ <strong>必须勾选</strong> <code>ExportGasToText</code>。</li>
+<li><em>原因</em>：IO Server 是系统的核心数据引擎，负责处理 Tag 数据，由它来执行写文件最高效、最稳定。</li>
+</ul>
+<ol start="5">
+<li><strong>User Privileges</strong>：</li>
+</ol>
+<ul>
+<li>选择 <code>Default Server User</code>。确保 IO Server 进程有权限在这个电脑上新建和写入文件。</li>
+</ul>
+<hr>
+<h2 id="4-调试与验证-validation-debugging">4. 调试与验证 (Validation &amp; Debugging)</h2>
+<p>完成上述配置后，<strong>必须先关机（shutdown）</strong>，然后<strong>完全重启 Runtime</strong>（不仅是刷新，要关掉重开）。</p>
+<h3 id="41-验证步骤">4.1 验证步骤</h3>
+<ol>
+<li><strong>方法一：黑盒测试（观察结果）</strong></li>
+</ol>
+<ul>
+<li>直接打开 <code>C:\CitectData\</code> 文件夹。</li>
+<li>观察 <code>GasRealtime.json</code> 的 <strong>“修改日期”</strong>。</li>
+<li><strong>预期结果</strong>：时间戳每 5 秒跳动一次。</li>
+</ul>
+<ol start="2">
+<li><strong>方法二：白盒测试（逻辑验证）</strong></li>
+</ol>
+<ul>
+<li>如果文件未自动生成，在 Citect Graphic 画图编辑器中，打开 <code>Startup_Small</code> 页面。</li>
+<li>画一个按钮，Input 设置为 <code>ExportGasToText()</code>。</li>
+<li>运行并点击按钮。</li>
+<li><strong>结果分析</strong>：</li>
+<li>若点击按钮生成了文件，但自动运行不生成 -&gt; 说明代码没问题，<strong>步骤 3.4 配置有误</strong>。</li>
+<li>若点击按钮也不生成文件 -&gt; 说明 <strong>步骤 3.2 代码路径错误</strong> 或文件夹不存在。</li>
+</ul>
+<hr>
+<h2 id="5-总结-conclusion">5. 总结 (Conclusion)</h2>
+<p>本方案通过标准化的 Citect 开发流程，解决了遗留系统数据封闭的问题。</p>
+<ul>
+<li><strong>安全性</strong>：使用 <code>Cluster1.IOServer</code> 单进程写入，避免了文件冲突。</li>
+<li><strong>可靠性</strong>：引入了 <code>IODeviceInfo</code> 在线判断，防止断线后上传脏数据。</li>
+<li><strong>扩展性</strong>：基于 JSON 格式，Node.js 端解析灵活，未来增加变量只需修改 Cicode 即可。</li>
+</ul>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/si-you-hua-yu-yin-mo-xing-cpu-ban-jiao-fu-ce-shi-bao-gao-mo-ban/" class="post-title gt-a-link">
+                    私有化语音模型（CPU 版）交付测试报告模板
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+    hljs.initHighlightingOnLoad();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("pre code").forEach((codeBlock) => {
+            const pre = codeBlock.parentElement;
+
+            // 创建外层容器包裹pre，方便定位按钮
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-block-wrapper";
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+
+            // 创建复制按钮
+            const button = document.createElement("button");
+            button.className = "copy-button";
+            button.type = "button";
+            button.innerText = "复制";
+
+            // 插入按钮到wrapper
+            wrapper.insertBefore(button, pre);
+
+            // 复制事件
+            button.addEventListener("click", () => {
+                const text = codeBlock.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    button.innerText = "已复制";
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error("复制失败:", err);
+                    button.innerText = "失败";
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .code-block-wrapper {
+        position: relative;
+    }
+    .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color:rgb(119, 158, 232);
+        border: none;
+        color: white;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+    }
+    .copy-button:disabled {
+        background-color:rgb(149, 170, 191);
+        cursor: default;
+    }
+</style>
+
+    </div>
+</div>
+</body>
+</html>

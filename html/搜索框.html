@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>带联想搜索功能的搜索框</title>
+    <style>
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .search-input {
+            width: 0;
+            padding: 5px;
+            transition: width 0.5s;
+            box-sizing: border-box;
+            opacity: 0;
+        }
+
+        .search-input.active {
+            width: 200px;
+            opacity: 1;
+        }
+
+        .search-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .suggestions {
+            border: 1px solid #ddd;
+            position: absolute;
+            top: 35px;
+            width: 200px;
+            display: none;
+            background-color: #fff;
+            z-index: 1000;
+        }
+
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="输入搜索内容...">
+        <button class="search-button" id="searchButton">搜索</button>
+        <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const suggestions = document.getElementById('suggestions');
+        const suggestionData = ['001', '012', '013'];
+        let inputMode = false;
+
+        searchButton.addEventListener('click', () => {
+            if (!inputMode) {
+                searchInput.classList.add('active');
+                searchInput.focus();
+                inputMode = true;
+                searchButton.textContent = '清除';
+            } else {
+                searchInput.value = '';
+                searchInput.classList.remove('active');
+                inputMode = false;
+                searchButton.textContent = '搜索';
+                suggestions.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('input', () => {
+            const value = searchInput.value.toLowerCase();
+            suggestions.innerHTML = '';
+            if (value) {
+                const filteredSuggestions = suggestionData.filter(item => item.includes(value));
+                if (filteredSuggestions.length > 0) {
+                    filteredSuggestions.forEach(item => {
+                        const div = document.createElement('div');
+                        div.textContent = item;
+                        div.classList.add('suggestion-item');
+                        div.addEventListener('click', () => {
+                            searchInput.value = item;
+                            suggestions.style.display = 'none';
+                        });
+                        suggestions.appendChild(div);
+                    });
+                    suggestions.style.display = 'block';
+                } else {
+                    suggestions.innerHTML = '<div class="suggestion-item">没有相关摄像头</div>';
+                    suggestions.style.display = 'block';
+                }
+            } else {
+                suggestions.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Backspace' && !searchInput.value) {
+                suggestions.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.search-container')) {
+                if (!searchInput.value) {
+                    searchInput.classList.remove('active');
+                    inputMode = false;
+                    searchButton.textContent = '搜索';
+                    suggestions.style.display = 'none';
+                }
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            if (!searchInput.value) {
+                searchButton.textContent = '搜索';
+                searchInput.classList.remove('active');
+                inputMode = false;
+                suggestions.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
