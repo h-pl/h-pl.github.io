@@ -1,0 +1,389 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="OlF-dcAmFF8MujN7obXE-UCLx_pJBExzzK9fHBCAspA" />
+
+<title>如何从 MinIO 底层磁盘手动恢复中断的 Multipart 视频分片？ | 知之</title>
+
+<link rel="shortcut icon" href="https://h-pl.github.io/favicon.ico?v=1782709049266">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://h-pl.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a href="/">
+        <div class="navbar-brand">
+            <img class="user-avatar" src="/images/avatar.png" alt="头像">
+            <div class="site-name gt-c-content-color-first">
+                知之
+            </div>
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                            <a href="/" class="menu gt-a-link">
+                                首页
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/archives" class="menu gt-a-link">
+                                归档
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/tags" class="menu gt-a-link">
+                                标签
+                            </a>
+                            
+                </div>
+                
+                <div class="nav-item">
+                    
+                            <a href="/post/about" class="menu gt-a-link">
+                                关于
+                            </a>
+                            
+                </div>
+                
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1782709049266"
+                action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    如何从 MinIO 底层磁盘手动恢复中断的 Multipart 视频分片？
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2026-06-25 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p>在日常的监控视频或大文件存储架构中，MinIO 是一个极受欢迎的 S3 兼容对象存储方案。但在某些极端网络或断电场景下，大文件（如 MP4 监控视频）的分片上传（Multipart Upload）可能会意外中断。</p>
+<p>当你登录服务器底层磁盘，满怀希望地找到了对应的目录，却发现里面只有 <code>xl.meta</code> 和一堆 <code>part.1</code>, <code>part.2</code>, <code>part.3</code>... 文件时，真正的噩梦才刚刚开始。</p>
+<p>这篇文章将带你完整重演一次从“无脑拼接”到“精准剥离底层校验头”的硬核数据恢复之旅。</p>
+<h2 id="踩坑一为什么官方客户端-mc-cp-会报错">💥 踩坑一：为什么官方客户端 <code>mc cp</code> 会报错？</h2>
+<p>发现底层碎片后，很多人的第一直觉（包括我）是：既然这是 S3 协议的数据，那我直接用 MinIO 官方客户端 <code>mc</code> 去拷贝不就行了？</p>
+<p>于是我们执行了命令：</p>
+<pre><code class="language-bash">mc cp nas/cdmp/aicamera/recordings/.../2026-04-16_14-05-58-292047.mp4 ./
+
+</code></pre>
+<p>结果却被无情打脸：</p>
+<blockquote>
+<p><code>mc: &lt;ERROR&gt; Unable to prepare URL for copying. Unable to guess the type of copy operation.</code></p>
+</blockquote>
+<p><strong>为什么会报错？原因在于对象存储的“事务一致性”机制。</strong></p>
+<p>在 MinIO（以及 AWS S3）的底层逻辑中，当你发起一个分片上传时，系统会在磁盘上创建一个临时目录（通常带有一个 UUID 或以 <code>/</code> 结尾的文件夹名）来存放碎片。只要客户端没有发送最终的 <code>CompleteMultipartUpload</code>（完成上传）指令，这个视频在逻辑上就是<strong>不存在的</strong>。</p>
+<p><code>mc cp</code> 工具的作用是下载<strong>已完结的合法对象</strong>。当它试图访问这个由于中断而遗留的临时目录时，发现它既不是一个普通的对象文件，也不是一个标准的文件夹，而是一个“未完结的幽灵事务”。因此，客户端无法判断你是要复制文件还是复制目录，最终抛出 <code>Unable to guess the type of copy operation</code>（无法猜测复制操作类型）的错误。</p>
+<p><strong>结论：</strong> 官方 API 拒绝服务，我们只能通过底层物理文件进行硬核数据恢复。</p>
+<h2 id="踩坑二简单的二进制拼接为什么无法播放">💥 踩坑二：简单的二进制拼接为什么无法播放？</h2>
+<p>既然 API 走不通，那就写个 Python 脚本，把 <code>part.1</code>、<code>part.2</code> 按数字顺序以纯二进制（<code>rb/wb</code>）模式首尾相连拼接起来总行了吧？</p>
+<p><strong>结果：视频依然无法播放，甚至连格式都无法被识别。</strong></p>
+<p>通过使用 Hex 编辑器（如 WinHex）强行读取 <code>part.1</code> 的二进制头部，我们发现了惊人的秘密：<strong>分片文件里不仅有视频流，还夹杂了 MinIO 的私有校验数据。</strong></p>
+<p>在 <code>part.1</code> 的最开头，存在 <strong>32 个字节</strong>的杂乱数据，跳过这 32 字节后，才出现了标准 MP4 文件的合法标识头 <code>ftyp</code>。<br>
+这 32 个字节，是 MinIO 底层为了防止硬盘静默数据损坏（Bitrot）而强制追加的 <strong>Blake2b 校验和</strong>。单纯的二进制拼接把这些非视频字节混入了视频流，直接摧毁了 MP4 的封装格式。</p>
+<h2 id="踩坑三半成功的陷阱">💥 踩坑三：“半成功”的陷阱</h2>
+<p>发现校验头后，我们迅速修改了脚本：<strong>在读取每一个 <code>part.X</code> 文件时，先 <code>read(32)</code> 跳过开头，再把剩下的合并。</strong></p>
+<p>这次合成的视频<strong>可以打开了</strong>，但出现了更诡异的情况：<strong>能看，但不能完全看</strong>。视频播放了一小段后，突然画面花屏、马赛克，随后播放器直接崩溃卡死。</p>
+<p>这是整个恢复过程中最大的盲点：<strong>MinIO 并不是只在文件头加一次校验，而是基于数据块（Block）进行校验的！</strong></p>
+<p>在 MinIO 中，存在一个 <code>EcBSize</code>（Erasure Code Block Size，通常是 1MB 或 5MB）的设定。文件的真实物理结构其实是这样的切片循环：<br>
+<code>[32字节校验] + [1MB视频数据] + [32字节校验] + [1MB视频数据] + [32字节校验] ...</code></p>
+<p>我们的第二版脚本只删掉了最开头的 32 字节，导致视频播放到 1MB 的位置时，解码器一头撞上了内部后续残留的校验乱码，导致播放器当场暴毙。</p>
+<h2 id="终极方案解析元数据全盘精准剥离">🚀 终极方案：解析元数据，全盘精准剥离</h2>
+<p>找到了根本原因，最终的抢救方案也就呼之欲出了：</p>
+<ol>
+<li><strong>解析 <code>xl.meta</code>：</strong> 用代码读取这个 MessagePack 格式的元数据文件，提取出当前系统设定的真实块大小（<code>EcBSize</code>）。</li>
+<li><strong>剥洋葱式提取：</strong> 以设定的块大小为周期，全盘遍历分片，遇到 32 字节就丢弃，遇到数据块就保留。</li>
+<li><strong>重建时间轴：</strong> 由于视频是意外中断的，其物理画面长度与文件头记录的预期长度不符。最后必须调用 FFmpeg 重写时间轴（Timeline），避免进度条卡死。</li>
+</ol>
+<h3 id="最终-python-恢复脚本">最终 Python 恢复脚本</h3>
+<p>将此脚本放在包含碎片的同级目录下执行（需提前安装 FFmpeg）：</p>
+<pre><code class="language-python">import os
+import subprocess
+
+def get_ec_block_size(xl_meta_path):
+    &quot;&quot;&quot;从 xl.meta 中动态解析数据块大小 (默认 1MB)&quot;&quot;&quot;
+    default_size = 1048576  
+    try:
+        if not os.path.exists(xl_meta_path): return default_size
+        with open(xl_meta_path, 'rb') as f:
+            data = f.read()
+            idx = data.find(b'EcBSize') # 搜索 MessagePack 关键字
+            if idx != -1:
+                val_type = data[idx+7]
+                if val_type == 0xce: return int.from_bytes(data[idx+8:idx+12], 'big')
+                elif val_type == 0xcd: return int.from_bytes(data[idx+8:idx+10], 'big')
+                elif val_type == 0xcf: return int.from_bytes(data[idx+8:idx+16], 'big')
+    except Exception:
+        pass
+    return default_size
+
+def merge_minio_parts_perfect():
+    base_dir = &quot;.&quot;
+    output_dir = os.path.join(base_dir, &quot;merged&quot;)
+    if not os.path.exists(output_dir): os.makedirs(output_dir)
+
+    for folder_name in os.listdir(base_dir):
+        if os.path.isdir(folder_name) and folder_name.endswith('.mp4'):
+            print(f&quot;[*] 处理视频目录: {folder_name}&quot;)
+            
+            xl_meta_path = os.path.join(base_dir, folder_name, 'xl.meta')
+            raw_output = os.path.join(output_dir, f&quot;raw_{folder_name}&quot;)
+            final_output = os.path.join(output_dir, folder_name)
+            
+            parts_dir = next((root for root, _, files in os.walk(folder_name) if any(f.startswith('part.') for f in files)), None)
+            
+            if parts_dir:
+                ec_block_size = get_ec_block_size(xl_meta_path)
+                part_files = sorted([f for f in os.listdir(parts_dir) if f.startswith('part.')], key=lambda x: int(x.split('.')[-1]))
+                
+                # 核心逻辑：按块大小循环剥离 32 字节校验头
+                with open(raw_output, 'wb') as outfile:
+                    for part_name in part_files:
+                        part_path = os.path.join(parts_dir, part_name)
+                        file_size = os.path.getsize(part_path)
+                        
+                        with open(part_path, 'rb') as infile:
+                            bytes_read = 0
+                            while bytes_read &lt; file_size:
+                                header = infile.read(32) # 吃掉并丢弃 32 字节的垃圾头
+                                if not header: break
+                                bytes_read += len(header)
+                                
+                                chunk_data = infile.read(ec_block_size) # 读取纯净视频流
+                                if not chunk_data: break
+                                outfile.write(chunk_data)
+                                bytes_read += len(chunk_data)
+                
+                # 修复由于异常中断导致的 Timeline 和索引错误
+                print(f&quot;    -&gt; 正在通过 FFmpeg 重建视频时间轴...&quot;)
+                try:
+                    subprocess.run([&quot;ffmpeg&quot;, &quot;-y&quot;, &quot;-i&quot;, raw_output, &quot;-c&quot;, &quot;copy&quot;, final_output], 
+                                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    os.remove(raw_output)
+                    print(f&quot;[+] 完美修复！文件位于: {final_output}\n&quot;)
+                except Exception:
+                    print(f&quot;[!] 索引重建失败，保留纯净基础流: {raw_output}\n&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    merge_minio_parts_perfect()
+
+</code></pre>
+<h2 id="总结">总结</h2>
+<p>这次恢复过程不仅是一次成功的抢救，更让我们对对象存储的底层结构有了更深的认识：</p>
+<ol>
+<li><strong>API 不是万能的</strong>：处于未完结事务状态的对象，官方客户端无能为力。</li>
+<li><strong>底层存储并不纯粹</strong>：为了保证数据安全，MinIO 在磁盘上直接注入了区块级别的校验逻辑（Bitrot Checksum），这让传统的数据恢复手段失效。</li>
+<li><strong>遇到问题，直接看二进制</strong>：当常规逻辑走不通时，使用 Hex 编辑器查看文件头，往往能发现突破口。</li>
+</ol>
+<p>如果你也遇到了大文件上传中断导致的 MinIO 存储碎片问题，这套方案将是你在底层捞回数据的最后一道保险。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://h-pl.github.io/post/vijeo-citect-72-yi-liu-xi-tong-shu-ju-jie-ou-yu-cai-ji-fang-an/" class="post-title gt-a-link">
+                    Vijeo Citect 7.2 遗留系统数据解耦与采集方案
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '622af20df66a3eae1b42',
+    clientSecret: '7c473d24902816c9148fb2602765d24c58424287',
+    repo: 'h-pl.github.io',
+    owner: 'h-pl',
+    admin: ['h-pl'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first"></div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <!-- <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://h-pl.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div> -->
+</div>
+
+<script>
+    hljs.initHighlightingOnLoad();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("pre code").forEach((codeBlock) => {
+            const pre = codeBlock.parentElement;
+
+            // 创建外层容器包裹pre，方便定位按钮
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-block-wrapper";
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+
+            // 创建复制按钮
+            const button = document.createElement("button");
+            button.className = "copy-button";
+            button.type = "button";
+            button.innerText = "复制";
+
+            // 插入按钮到wrapper
+            wrapper.insertBefore(button, pre);
+
+            // 复制事件
+            button.addEventListener("click", () => {
+                const text = codeBlock.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    button.innerText = "已复制";
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error("复制失败:", err);
+                    button.innerText = "失败";
+                    setTimeout(() => {
+                        button.innerText = "复制";
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    .code-block-wrapper {
+        position: relative;
+    }
+    .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color:rgb(119, 158, 232);
+        border: none;
+        color: white;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+    }
+    .copy-button:disabled {
+        background-color:rgb(149, 170, 191);
+        cursor: default;
+    }
+</style>
+
+    </div>
+</div>
+</body>
+</html>
